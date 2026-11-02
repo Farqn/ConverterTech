@@ -57,7 +57,7 @@
         <div class="mb-4 space-y-2">
             <!-- Kategori 1: Görsel Araçları -->
             <div>
-                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold block mb-1" data-i18n="catImage">Image Tools</span>
+                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold block mb-1" data-i18n="catImage">🖼️ Image Tools</span>
                 <div class="flex p-1 bg-darkbg rounded-xl shadow-inner border border-bordercol gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap">
                     <button id="btn-converter" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide" data-i18n="tabFormat">Format</button>
                     <button id="btn-resizer" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabResizer">Size</button>
@@ -68,7 +68,7 @@
             </div>
             <!-- Kategori 2: GIF Medya Araçları -->
             <div>
-                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold block mb-1" data-i18n="catGif">GIF & Animation Tools</span>
+                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold block mb-1" data-i18n="catGif">🎞️ GIF & Animation Tools</span>
                 <div class="flex p-1 bg-darkbg rounded-xl shadow-inner border border-bordercol gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap">
                     <button id="btn-gifmaker" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabGifMaker">GIF Maker</button>
                     <button id="btn-gifsplitter" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabGifSplitter">GIF Splitter</button>
@@ -445,7 +445,7 @@
         // --- MULTILANGUAGE (ÇOKLU DİL) MANTIĞI ---
         const i18n = {
             en: {
-                catImage: "Image Tools", catGif: "GIF & Animation Tools",
+                catImage: "🖼️ Image Tools", catGif: "🎞️ GIF & Animation Tools",
                 tabFormat: "Format", tabResizer: "Size", tabCompressor: "Compress", tabFilters: "Filters", tabCrop: "Crop",
                 tabGifMaker: "GIF Maker", tabGifSplitter: "GIF Splitter", tabGifSpeed: "Speed / Loop", tabGifMod: "GIF Resize/Crop",
                 fmtTitle: "Batch Format Converter", fmtDesc: "Convert multiple JPG, PNG, WEBP, BMP files at once.",
@@ -472,7 +472,7 @@
                 warnHeavy: "Warning: High frame count or pixel size detected. Processing may take a while."
             },
             tr: {
-                catImage: "Görsel Araçları", catGif: "GIF & Animasyon Araçları",
+                catImage: "🖼️ Görsel Araçları", catGif: "🎞️ GIF & Animasyon Araçları",
                 tabFormat: "Format", tabResizer: "Boyut", tabCompressor: "Sıkıştırma", tabFilters: "Filtreler", tabCrop: "Kırpma",
                 tabGifMaker: "GIF Yapıcı", tabGifSplitter: "GIF Bölücü", tabGifSpeed: "Hız / Döngü", tabGifMod: "GIF Boyutlandırma",
                 fmtTitle: "Çoklu Format Dönüştürücü", fmtDesc: "Aynı anda birden fazla resmi seçip tek tıkla dönüştürün.",
@@ -804,11 +804,8 @@
                 gmSortable = Sortable.create(gmFramesList, {
                     animation: 150,
                     onEnd: () => {
-                        // Sıralamayı gmFiles dizisine yansıt
                         const newFiles = [];
-                        Array.from(gmFramesList.children).forEach(child => {
-                            // index bulma mantığı basitleştirilebilir veya children index ile eşlenebilir
-                        });
+                        Array.from(gmFramesList.children).forEach(child => {});
                     }
                 });
             }
@@ -832,7 +829,6 @@
             progressBox.classList.remove('hidden');
             gmCancelled = false;
 
-            // Worker script blob hazırlama (gif.js için zorunlu aynı-origin kısıtı)
             try {
                 const workerRes = await fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js');
                 const workerText = await workerRes.text();
@@ -848,7 +844,6 @@
                     height: customH || 200
                 });
 
-                // Boyutları ilk görselden veya custom değerden ayarla
                 let firstImg = await new Promise(res => {
                     const im = new Image(); const u = URL.createObjectURL(gmFiles[0]);
                     im.onload = () => { res(im); URL.revokeObjectURL(u); }; im.src = u;
@@ -871,7 +866,7 @@
                     x.fillStyle = '#FFFFFF'; x.fillRect(0,0,finalW,finalH);
                     x.drawImage(img, 0, 0, finalW, finalH);
                     gif.addFrame(x, { delay: globalDelay });
-                    await new Promise(r => setTimeout(r, 10)); // UI donmasın
+                    await new Promise(r => setTimeout(r, 10));
                 }
 
                 if(gmCancelled) {
@@ -907,7 +902,7 @@
         setupDropZone('drop-zone-gs', 'file-input-gs', async (file) => {
             if(!file) return;
             const arrayBuffer = await file.arrayBuffer();
-            const gif =ouxParseGif(arrayBuffer); // gifuct-js
+            const gif = ouzParseGif(arrayBuffer);
             if(!gif) return alert("Invalid GIF file");
 
             const framesGrid = document.getElementById('gs-frames-grid');
@@ -919,7 +914,7 @@
             const progressText = document.getElementById('gs-progress-text');
             progressBox.classList.remove('hidden');
 
-            const decompressFrames = parseGIF(arrayBuffer); // parseGIF from gifuct
+            const decompressFrames = parseGIF(arrayBuffer);
             const frames = decompressFrames(gif, true);
             const canvas = document.createElement('canvas');
             canvas.width = gif.header.width; canvas.height = gif.header.height;
