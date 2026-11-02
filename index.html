@@ -33,11 +33,14 @@
 
         <!-- Kategori (Sekme) Butonları -->
         <div class="flex p-1 bg-slate-900 rounded-xl mb-6 shadow-inner border border-slate-800">
-            <button id="btn-converter" class="flex-1 py-2.5 rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all text-sm tracking-wide">
-                Format Converter
+            <button id="btn-converter" class="flex-1 py-2 text-xs md:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide">
+                Format
             </button>
-            <button id="btn-resizer" class="flex-1 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 font-semibold transition-all text-sm tracking-wide">
-                Image Resizer
+            <button id="btn-resizer" class="flex-1 py-2 text-xs md:text-sm rounded-lg text-slate-400 hover:text-slate-200 font-semibold transition-all tracking-wide">
+                Boyut
+            </button>
+            <button id="btn-compressor" class="flex-1 py-2 text-xs md:text-sm rounded-lg text-slate-400 hover:text-slate-200 font-semibold transition-all tracking-wide">
+                Sıkıştırma
             </button>
         </div>
 
@@ -47,10 +50,9 @@
         <div id="sec-converter" class="block animate-[fadeIn_0.3s_ease-in-out]">
             <div class="text-center mb-4">
                 <h3 class="text-lg font-bold text-slate-200">Görsel Format Dönüştürücü</h3>
-                <p class="text-xs text-slate-400">JPG, PNG, WEBP formatları arasında hızlıca dönüşüm yapın.</p>
+                <p class="text-xs text-slate-400">JPG, PNG, WEBP, BMP formatları arasında hızlıca dönüşüm yapın.</p>
             </div>
 
-            <!-- Sürükle Bırak Alanı (Converter) -->
             <div id="drop-zone-conv" class="border-2 border-dashed border-slate-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-500 transition-all bg-slate-900/50 mb-6">
                 <svg class="w-10 h-10 mx-auto text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
@@ -67,7 +69,6 @@
                         <p id="file-size-conv" class="text-xs text-slate-400"></p>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Hedef Format:</label>
                     <select id="format-select-conv" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200">
@@ -77,7 +78,6 @@
                         <option value="image/bmp">BMP (.bmp)</option>
                     </select>
                 </div>
-
                 <button id="action-btn-conv" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-semibold py-3 rounded-lg shadow-lg text-sm">
                     Dönüştür ve İndir
                 </button>
@@ -94,7 +94,6 @@
                 <p class="text-xs text-slate-400">Görsellerinizin piksel ölçülerini (genişlik/yükseklik) ayarlayın.</p>
             </div>
 
-            <!-- Sürükle Bırak Alanı (Resizer) -->
             <div id="drop-zone-res" class="border-2 border-dashed border-slate-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-500 transition-all bg-slate-900/50 mb-6">
                 <svg class="w-10 h-10 mx-auto text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
@@ -112,7 +111,6 @@
                     </div>
                 </div>
 
-                <!-- Çözünürlük Ayarları -->
                 <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
@@ -129,9 +127,57 @@
                         <label for="lock-aspect-res" class="text-xs text-slate-300 cursor-pointer select-none">En-boy oranını sabitle</label>
                     </div>
                 </div>
-
                 <button id="action-btn-res" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-semibold py-3 rounded-lg shadow-lg text-sm">
                     Boyutlandır ve İndir
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 3. BÖLÜM: IMAGE COMPRESSOR EKRANI          -->
+        <!-- ========================================== -->
+        <div id="sec-compressor" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold text-slate-200">Görsel Sıkıştırıcı</h3>
+                <p class="text-xs text-slate-400">Kaliteyi ayarlayarak dosya boyutunu (MB/KB) küçültün.</p>
+            </div>
+
+            <div id="drop-zone-comp" class="border-2 border-dashed border-slate-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-500 transition-all bg-slate-900/50 mb-6">
+                <svg class="w-10 h-10 mx-auto text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <p class="text-sm font-medium">Görseli buraya bırakın veya <span class="text-blue-400 underline">seçin</span></p>
+                <input type="file" id="file-input-comp" accept="image/*" class="hidden">
+            </div>
+
+            <div id="preview-container-comp" class="hidden space-y-4">
+                <div class="flex items-center gap-4 bg-slate-900 p-3 rounded-lg border border-slate-800">
+                    <img id="image-preview-comp" class="w-14 h-14 object-cover rounded-md border border-slate-700">
+                    <div class="overflow-hidden">
+                        <p id="file-name-comp" class="text-sm font-medium truncate text-slate-200"></p>
+                        <p id="file-size-comp" class="text-xs text-slate-400"></p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sıkıştırma Kalitesi</label>
+                        <span id="quality-val" class="text-sm font-bold text-blue-400">% 70</span>
+                    </div>
+                    <input type="range" id="quality-slider" min="10" max="100" value="70" class="w-full accent-blue-600">
+                    <p class="text-[10px] text-slate-500">Not: PNG dosyaları sıkıştırma (kayıp) desteklemez. Etkili sıkıştırma için JPG veya WebP çıktı formatı seçin.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Hedef Format:</label>
+                    <select id="format-select-comp" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200">
+                        <option value="image/jpeg">JPEG / JPG (.jpg)</option>
+                        <option value="image/webp">WebP (.webp)</option>
+                    </select>
+                </div>
+
+                <button id="action-btn-comp" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-semibold py-3 rounded-lg shadow-lg text-sm">
+                    Sıkıştır ve İndir
                 </button>
             </div>
         </div>
@@ -149,40 +195,49 @@
         // --- SEKME (TAB) DEĞİŞTİRME MANTIĞI ---
         const btnConverter = document.getElementById('btn-converter');
         const btnResizer = document.getElementById('btn-resizer');
+        const btnCompressor = document.getElementById('btn-compressor');
+        
         const secConverter = document.getElementById('sec-converter');
         const secResizer = document.getElementById('sec-resizer');
+        const secCompressor = document.getElementById('sec-compressor');
 
-        btnConverter.addEventListener('click', () => {
-            // Buton Stilleri
-            btnConverter.className = "flex-1 py-2.5 rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all text-sm tracking-wide";
-            btnResizer.className = "flex-1 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 font-semibold transition-all text-sm tracking-wide";
-            // Bölüm Görünürlüğü
-            secConverter.classList.remove('hidden');
-            secResizer.classList.add('hidden');
-        });
+        function switchTab(activeTab) {
+            const activeClass = "flex-1 py-2 text-xs md:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide";
+            const inactiveClass = "flex-1 py-2 text-xs md:text-sm rounded-lg text-slate-400 hover:text-slate-200 font-semibold transition-all tracking-wide";
+            
+            btnConverter.className = activeTab === 'conv' ? activeClass : inactiveClass;
+            btnResizer.className = activeTab === 'res' ? activeClass : inactiveClass;
+            btnCompressor.className = activeTab === 'comp' ? activeClass : inactiveClass;
+            
+            secConverter.classList.toggle('hidden', activeTab !== 'conv');
+            secResizer.classList.toggle('hidden', activeTab !== 'res');
+            secCompressor.classList.toggle('hidden', activeTab !== 'comp');
+        }
 
-        btnResizer.addEventListener('click', () => {
-            // Buton Stilleri
-            btnResizer.className = "flex-1 py-2.5 rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all text-sm tracking-wide";
-            btnConverter.className = "flex-1 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 font-semibold transition-all text-sm tracking-wide";
-            // Bölüm Görünürlüğü
-            secResizer.classList.remove('hidden');
-            secConverter.classList.add('hidden');
-        });
+        btnConverter.addEventListener('click', () => switchTab('conv'));
+        btnResizer.addEventListener('click', () => switchTab('res'));
+        btnCompressor.addEventListener('click', () => switchTab('comp'));
+
+
+        // --- ORTAK SÜRÜKLE BIRAK YARDIMCI FONKSİYONU ---
+        function setupDropZone(dropId, inputId, handleFn) {
+            const drop = document.getElementById(dropId);
+            const input = document.getElementById(inputId);
+            drop.addEventListener('click', () => input.click());
+            input.addEventListener('change', (e) => handleFn(e.target.files[0]));
+            drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('border-blue-500'); });
+            drop.addEventListener('dragleave', () => drop.classList.remove('border-blue-500'));
+            drop.addEventListener('drop', (e) => { 
+                e.preventDefault(); 
+                drop.classList.remove('border-blue-500'); 
+                if (e.dataTransfer.files.length) handleFn(e.dataTransfer.files[0]); 
+            });
+        }
 
 
         // --- 1. FORMAT CONVERTER MANTIĞI ---
         let fileConv = null;
-        const dropConv = document.getElementById('drop-zone-conv');
-        const inputConv = document.getElementById('file-input-conv');
-        
-        dropConv.addEventListener('click', () => inputConv.click());
-        inputConv.addEventListener('change', (e) => handleConvFile(e.target.files[0]));
-        dropConv.addEventListener('dragover', (e) => { e.preventDefault(); dropConv.classList.add('border-blue-500'); });
-        dropConv.addEventListener('dragleave', () => dropConv.classList.remove('border-blue-500'));
-        dropConv.addEventListener('drop', (e) => { e.preventDefault(); dropConv.classList.remove('border-blue-500'); if (e.dataTransfer.files.length) handleConvFile(e.dataTransfer.files[0]); });
-
-        function handleConvFile(file) {
+        setupDropZone('drop-zone-conv', 'file-input-conv', (file) => {
             if (!file || !file.type.startsWith('image/')) return alert('Lütfen geçerli bir görsel yükleyin!');
             fileConv = file;
             document.getElementById('file-name-conv').textContent = file.name;
@@ -194,7 +249,7 @@
                 document.getElementById('preview-container-conv').classList.remove('hidden');
             };
             reader.readAsDataURL(file);
-        }
+        });
 
         document.getElementById('action-btn-conv').addEventListener('click', () => {
             if (!fileConv) return;
@@ -216,7 +271,7 @@
                         const ext = targetFormat.split('/')[1].replace('jpeg', 'jpg');
                         a.download = `${fileConv.name.split('.')[0]}-converted.${ext}`;
                         a.click();
-                    }, targetFormat, 0.92);
+                    }, targetFormat, 0.92); // Sabit yüksek kalite
                 };
                 img.src = e.target.result;
             };
@@ -227,19 +282,11 @@
         // --- 2. IMAGE RESIZER MANTIĞI ---
         let fileRes = null;
         let origW = 0; let origH = 0;
-        const dropRes = document.getElementById('drop-zone-res');
-        const inputRes = document.getElementById('file-input-res');
         const wInput = document.getElementById('width-input-res');
         const hInput = document.getElementById('height-input-res');
         const lockRes = document.getElementById('lock-aspect-res');
-        
-        dropRes.addEventListener('click', () => inputRes.click());
-        inputRes.addEventListener('change', (e) => handleResFile(e.target.files[0]));
-        dropRes.addEventListener('dragover', (e) => { e.preventDefault(); dropRes.classList.add('border-blue-500'); });
-        dropRes.addEventListener('dragleave', () => dropRes.classList.remove('border-blue-500'));
-        dropRes.addEventListener('drop', (e) => { e.preventDefault(); dropRes.classList.remove('border-blue-500'); if (e.dataTransfer.files.length) handleResFile(e.dataTransfer.files[0]); });
 
-        function handleResFile(file) {
+        setupDropZone('drop-zone-res', 'file-input-res', (file) => {
             if (!file || !file.type.startsWith('image/')) return alert('Lütfen geçerli bir görsel yükleyin!');
             fileRes = file;
             document.getElementById('file-name-res').textContent = file.name;
@@ -257,7 +304,7 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-        }
+        });
 
         wInput.addEventListener('input', () => {
             if (lockRes.checked && origW > 0) {
@@ -296,7 +343,6 @@
                     canvas.toBlob((blob) => {
                         const a = document.createElement('a');
                         a.href = URL.createObjectURL(blob);
-                        // Orijinal uzantısında (örneğin jpeg, png) indirir
                         a.download = `${fileRes.name.split('.')[0]}-${tWidth}x${tHeight}.${fileRes.type.split('/')[1]}`;
                         a.click();
                     }, fileRes.type, 0.92);
@@ -304,6 +350,62 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(fileRes);
+        });
+
+
+        // --- 3. IMAGE COMPRESSOR MANTIĞI ---
+        let fileComp = null;
+        const qualitySlider = document.getElementById('quality-slider');
+        const qualityVal = document.getElementById('quality-val');
+
+        qualitySlider.addEventListener('input', (e) => {
+            qualityVal.textContent = `% ${e.target.value}`;
+        });
+
+        setupDropZone('drop-zone-comp', 'file-input-comp', (file) => {
+            if (!file || !file.type.startsWith('image/')) return alert('Lütfen geçerli bir görsel yükleyin!');
+            fileComp = file;
+            document.getElementById('file-name-comp').textContent = file.name;
+            document.getElementById('file-size-comp').textContent = `Orijinal: ${(file.size / 1024).toFixed(1)} KB`;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('image-preview-comp').src = e.target.result;
+                document.getElementById('preview-container-comp').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('action-btn-comp').addEventListener('click', () => {
+            if (!fileComp) return;
+            const targetFormat = document.getElementById('format-select-comp').value;
+            const quality = parseInt(qualitySlider.value) / 100;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width; canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Şeffaflığı beyaz ile doldur (JPEG çıktısı için)
+                    if (targetFormat === 'image/jpeg') {
+                        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    ctx.drawImage(img, 0, 0);
+
+                    canvas.toBlob((blob) => {
+                        const a = document.createElement('a');
+                        a.href = URL.createObjectURL(blob);
+                        const ext = targetFormat.split('/')[1].replace('jpeg', 'jpg');
+                        a.download = `${fileComp.name.split('.')[0]}-compressed.${ext}`;
+                        a.click();
+                    }, targetFormat, quality); // Slider'dan gelen kalite ayarı
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(fileComp);
         });
     </script>
 </body>
