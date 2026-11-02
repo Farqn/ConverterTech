@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConverterTech - Versatile Image Tools</title>
+    <title>ConverterTech - Versatile Image & GIF Tools</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,22 +13,28 @@
             theme: {
                 extend: {
                     colors: {
-                        darkbg: '#1f2937',  // Koyu Gri
-                        cardbg: '#374151',  // Orta Gri
-                        inputbg: '#4b5563', // Açık Gri
-                        bordercol: '#6b7280'// Çizgiler
+                        darkbg: '#1f2937',  
+                        cardbg: '#374151',  
+                        inputbg: '#4b5563', 
+                        bordercol: '#6b7280'
                     }
                 }
             }
         }
     </script>
 
-    <!-- Cropper.js for Image Cropping -->
+    <!-- Cropper.js -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-    <!-- JSZip for Batch Zipping -->
+    <!-- JSZip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- GIF Libraries: gifuct-js & SortableJS -->
+    <script src="https://cdn.jsdelivr.net/npm/gifuct-js@0.7.1/dist/gifuct-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <!-- gif.js main script (worker dinamik olarak blob üzerinden yüklenecek) -->
+    <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
 </head>
 <body class="bg-darkbg text-white min-h-screen flex flex-col items-center justify-center p-2 sm:p-4">
 
@@ -38,43 +44,52 @@
         <button id="flag-tr" onclick="changeLang('tr')" class="text-3xl hover:scale-110 transition-transform opacity-40 drop-shadow-lg" title="Türkçe">🇹🇷</button>
     </div>
 
-    <div class="w-full max-w-xl bg-cardbg p-4 sm:p-6 rounded-2xl shadow-2xl border border-bordercol relative mt-10 sm:mt-0">
+    <div class="w-full max-w-2xl bg-cardbg p-4 sm:p-6 rounded-2xl shadow-2xl border border-bordercol relative mt-10 sm:mt-0">
         
-        <!-- Işıklı ve Yanıp Sönen ConverterTech Yazısı -->
-        <div class="text-center mb-6">
+        <!-- Başlık -->
+        <div class="text-center mb-4">
             <h2 class="text-2xl md:text-3xl font-extrabold tracking-widest text-cyan-400 animate-pulse drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] uppercase">
                 ConverterTech
             </h2>
         </div>
 
-        <!-- Kategori (Sekme) Butonları -->
-        <div class="flex p-1 bg-darkbg rounded-xl mb-6 shadow-inner border border-bordercol gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap">
-            <button id="btn-converter" class="flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide" data-i18n="tabFormat">Format</button>
-            <button id="btn-resizer" class="flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabResizer">Size</button>
-            <button id="btn-compressor" class="flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabCompressor">Compress</button>
-            <button id="btn-filter" class="flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabFilters">Filters</button>
-            <button id="btn-crop" class="flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabCrop">Crop</button>
+        <!-- Araç Kategorileri ve Sekme Çubuğu (Görsel & GIF Gruplandırması) -->
+        <div class="mb-4 space-y-2">
+            <!-- Kategori 1: Görsel Araçları -->
+            <div>
+                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold block mb-1" data-i18n="catImage">Image Tools</span>
+                <div class="flex p-1 bg-darkbg rounded-xl shadow-inner border border-bordercol gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap">
+                    <button id="btn-converter" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide" data-i18n="tabFormat">Format</button>
+                    <button id="btn-resizer" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabResizer">Size</button>
+                    <button id="btn-compressor" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabCompressor">Compress</button>
+                    <button id="btn-filter" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabFilters">Filters</button>
+                    <button id="btn-crop" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabCrop">Crop</button>
+                </div>
+            </div>
+            <!-- Kategori 2: GIF Medya Araçları -->
+            <div>
+                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold block mb-1" data-i18n="catGif">GIF & Animation Tools</span>
+                <div class="flex p-1 bg-darkbg rounded-xl shadow-inner border border-bordercol gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap">
+                    <button id="btn-gifmaker" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabGifMaker">GIF Maker</button>
+                    <button id="btn-gifsplitter" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabGifSplitter">GIF Splitter</button>
+                    <button id="btn-gifspeed" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabGifSpeed">Speed / Loop</button>
+                    <button id="btn-gifmod" class="px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide" data-i18n="tabGifMod">GIF Resize/Crop</button>
+                </div>
+            </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 1. BÖLÜM: FORMAT CONVERTER (ÇOKLU İŞLEM)   -->
-        <!-- ========================================== -->
+        <!-- ================= 1. FORMAT CONVERTER ================= -->
         <div id="sec-converter" class="block animate-[fadeIn_0.3s_ease-in-out]">
             <div class="text-center mb-4">
                 <h3 class="text-lg font-bold text-white" data-i18n="fmtTitle">Batch Format Converter</h3>
                 <p class="text-xs text-gray-200" data-i18n="fmtDesc">Convert multiple JPG, PNG, WEBP, BMP files at once.</p>
             </div>
-
             <div id="drop-zone-conv" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
-                <svg class="w-10 h-10 mx-auto text-white mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 <p class="text-sm font-medium text-white" data-i18n="dropBatchText">Drop images here or <span class="text-blue-400 underline">browse</span></p>
                 <input type="file" id="file-input-conv" accept="image/*" multiple class="hidden">
             </div>
-
             <div id="preview-container-conv" class="hidden space-y-4">
-                <!-- Küçük Önizleme (Thumbnail) Listesi -->
                 <div id="thumb-list-conv" class="max-h-40 overflow-y-auto space-y-2 bg-darkbg p-2 rounded-lg border border-bordercol"></div>
-                
                 <div>
                     <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2" data-i18n="targetFormat">Target Format:</label>
                     <select id="format-select-conv" class="w-full bg-inputbg border border-bordercol rounded-lg p-3 text-sm focus:outline-none focus:border-blue-400 text-white font-semibold">
@@ -90,20 +105,21 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 2. BÖLÜM: IMAGE RESIZER                    -->
-        <!-- ========================================== -->
+        <!-- ================= 2. IMAGE RESIZER ================= -->
         <div id="sec-resizer" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
             <div class="text-center mb-4">
                 <h3 class="text-lg font-bold text-white" data-i18n="resTitle">Image Resizer</h3>
                 <p class="text-xs text-gray-200" data-i18n="resDesc">Adjust the pixel dimensions (width/height) of your images.</p>
             </div>
             <div id="drop-zone-res" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
-                <svg class="w-10 h-10 mx-auto text-white mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                 <p class="text-sm font-medium text-white" data-i18n="dropText">Drop image here or <span class="text-blue-400 underline">browse</span></p>
                 <input type="file" id="file-input-res" accept="image/*" class="hidden">
             </div>
             <div id="preview-container-res" class="hidden space-y-4">
+                <div id="gif-shortcut-res" class="hidden bg-cyan-900/60 border border-cyan-500 p-3 rounded-lg flex items-center justify-between">
+                    <span class="text-xs text-cyan-200" data-i18n="animatedGifDetected">Animated GIF detected!</span>
+                    <button onclick="switchTab('gifmod')" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-xs font-bold rounded" data-i18n="goToGifTools">Go to GIF Tools</button>
+                </div>
                 <div class="flex items-center gap-4 bg-darkbg p-3 rounded-lg border border-bordercol">
                     <img id="image-preview-res" class="w-14 h-14 object-cover rounded-md border border-bordercol">
                     <div class="overflow-hidden">
@@ -127,7 +143,6 @@
                         <label for="lock-aspect-res" class="text-xs font-semibold text-white cursor-pointer select-none" data-i18n="lockAspect">Lock aspect ratio</label>
                     </div>
                 </div>
-                
                 <div>
                     <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2" data-i18n="resFormat">Target Format:</label>
                     <select id="format-select-res" class="w-full bg-inputbg border border-bordercol rounded-lg p-3 text-sm focus:outline-none focus:border-blue-400 text-white font-semibold">
@@ -136,27 +151,27 @@
                         <option value="image/webp">WebP (.webp)</option>
                     </select>
                 </div>
-
                 <button id="action-btn-res" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnResize">
                     Resize and Download
                 </button>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 3. BÖLÜM: IMAGE COMPRESSOR                 -->
-        <!-- ========================================== -->
+        <!-- ================= 3. IMAGE COMPRESSOR ================= -->
         <div id="sec-compressor" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
             <div class="text-center mb-4">
                 <h3 class="text-lg font-bold text-white" data-i18n="cmpTitle">Image Compressor</h3>
                 <p class="text-xs text-gray-200" data-i18n="cmpDesc">Reduce file size by adjusting quality.</p>
             </div>
             <div id="drop-zone-comp" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
-                <svg class="w-10 h-10 mx-auto text-white mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 <p class="text-sm font-medium text-white" data-i18n="dropText">Drop image here or <span class="text-blue-400 underline">browse</span></p>
                 <input type="file" id="file-input-comp" accept="image/*" class="hidden">
             </div>
             <div id="preview-container-comp" class="hidden space-y-4">
+                <div id="gif-shortcut-comp" class="hidden bg-cyan-900/60 border border-cyan-500 p-3 rounded-lg flex items-center justify-between">
+                    <span class="text-xs text-cyan-200" data-i18n="animatedGifDetected">Animated GIF detected!</span>
+                    <button onclick="switchTab('gifmod')" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-xs font-bold rounded" data-i18n="goToGifTools">Go to GIF Tools</button>
+                </div>
                 <div class="flex items-center gap-4 bg-darkbg p-3 rounded-lg border border-bordercol">
                     <img id="image-preview-comp" class="w-14 h-14 object-cover rounded-md border border-bordercol">
                     <div class="overflow-hidden">
@@ -170,7 +185,7 @@
                         <span id="quality-val" class="text-sm font-bold text-blue-400">70%</span>
                     </div>
                     <input type="range" id="quality-slider" min="10" max="100" value="70" class="w-full accent-blue-600">
-                    <p class="text-[10px] text-gray-300" data-i18n="cmpNote">Note: PNG format does not support compression. Select JPG or WebP output format.</p>
+                    <p class="text-[10px] text-gray-300" data-i18n="cmpNote">Note: PNG format does not support compression.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2" data-i18n="targetFormat">Target Format:</label>
@@ -185,33 +200,23 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 4. BÖLÜM: RENK VE FİLTRELER                -->
-        <!-- ========================================== -->
+        <!-- ================= 4. FILTERS ================= -->
         <div id="sec-filter" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
             <div class="text-center mb-4">
                 <h3 class="text-lg font-bold text-white" data-i18n="filTitle">Color Settings and Filters</h3>
                 <p class="text-xs text-gray-200" data-i18n="filDesc">Apply special color profiles and adjust lighting.</p>
             </div>
             <div id="drop-zone-fil" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
-                <svg class="w-10 h-10 mx-auto text-white mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                 <p class="text-sm font-medium text-white" data-i18n="dropText">Drop image here or <span class="text-blue-400 underline">browse</span></p>
                 <input type="file" id="file-input-fil" accept="image/*" class="hidden">
             </div>
             <div id="preview-container-fil" class="hidden space-y-5">
+                <div id="gif-shortcut-fil" class="hidden bg-cyan-900/60 border border-cyan-500 p-3 rounded-lg flex items-center justify-between">
+                    <span class="text-xs text-cyan-200" data-i18n="animatedGifDetected">Animated GIF detected!</span>
+                    <button onclick="switchTab('gifmod')" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-xs font-bold rounded" data-i18n="goToGifTools">Go to GIF Tools</button>
+                </div>
                 <div class="flex justify-center bg-darkbg p-2 rounded-lg border border-bordercol">
                     <img id="image-preview-fil" class="max-h-48 object-contain rounded-md transition-all duration-100">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2" data-i18n="presets">Presets</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="applyPreset('none')" class="px-3 py-1.5 bg-inputbg hover:bg-bordercol text-white rounded text-xs font-bold transition-colors" data-i18n="preReset">Reset</button>
-                        <button onclick="applyPreset('cyberpunk')" class="px-3 py-1.5 bg-cyan-900 text-cyan-100 hover:bg-cyan-800 rounded text-xs font-bold transition-colors border border-cyan-700" data-i18n="preCyber">Cyberpunk</button>
-                        <button onclick="applyPreset('bw')" class="px-3 py-1.5 bg-gray-800 text-white hover:bg-gray-700 rounded text-xs font-bold transition-colors border border-gray-600" data-i18n="preBw">B&W</button>
-                        <button onclick="applyPreset('sepia')" class="px-3 py-1.5 bg-orange-900 text-orange-100 hover:bg-orange-800 rounded text-xs font-bold transition-colors border border-orange-700" data-i18n="preSepia">Sepia</button>
-                        <button onclick="applyPreset('retro')" class="px-3 py-1.5 bg-yellow-900 text-yellow-100 hover:bg-yellow-800 rounded text-xs font-bold transition-colors border border-yellow-700" data-i18n="preRetro">Retro</button>
-                        <button onclick="applyPreset('invert')" class="px-3 py-1.5 bg-purple-900 text-purple-100 hover:bg-purple-800 rounded text-xs font-bold transition-colors border border-purple-700" data-i18n="preInvert">Invert</button>
-                    </div>
                 </div>
                 <div class="bg-darkbg/60 p-4 rounded-xl border border-bordercol space-y-4">
                     <div class="flex flex-col gap-1">
@@ -222,62 +227,206 @@
                         <div class="flex justify-between"><span class="text-xs font-bold text-white uppercase" data-i18n="ctTitle">Contrast</span><span id="val-ct" class="text-xs font-bold text-blue-400">100%</span></div>
                         <input type="range" id="sl-ct" min="0" max="200" value="100" class="w-full accent-blue-600" oninput="updateFilters()">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <div class="flex justify-between"><span class="text-xs font-bold text-white uppercase" data-i18n="stTitle">Saturation</span><span id="val-st" class="text-xs font-bold text-blue-400">100%</span></div>
-                        <input type="range" id="sl-st" min="0" max="200" value="100" class="w-full accent-blue-600" oninput="updateFilters()">
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <div class="flex justify-between"><span class="text-xs font-bold text-white uppercase" data-i18n="blTitle">Blur</span><span id="val-bl" class="text-xs font-bold text-blue-400">0px</span></div>
-                        <input type="range" id="sl-bl" min="0" max="20" value="0" class="w-full accent-blue-600" oninput="updateFilters()">
-                    </div>
                 </div>
-                <div class="flex gap-3">
-                    <select id="format-select-fil" class="w-1/3 bg-inputbg border border-bordercol rounded-lg p-3 text-sm focus:outline-none focus:border-blue-400 text-white font-semibold">
-                        <option value="image/jpeg">JPG</option>
-                        <option value="image/png">PNG</option>
-                        <option value="image/webp">WebP</option>
-                    </select>
-                    <button id="action-btn-fil" class="w-2/3 bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnApply">
-                        Apply and Download
-                    </button>
-                </div>
+                <button id="action-btn-fil" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnApply">
+                    Apply and Download
+                </button>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 5. BÖLÜM: YENİ EKLENEN CROP (KIRPMA)       -->
-        <!-- ========================================== -->
+        <!-- ================= 5. CROP ================= -->
         <div id="sec-crop" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
             <div class="text-center mb-4">
                 <h3 class="text-lg font-bold text-white" data-i18n="crpTitle">Image Cropper</h3>
                 <p class="text-xs text-gray-200" data-i18n="crpDesc">Crop your images professionally without losing quality.</p>
             </div>
             <div id="drop-zone-crop" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
-                <svg class="w-10 h-10 mx-auto text-white mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 21V12.5M12.5 12.5H21M12.5 12.5V3M12.5 12.5H3" transform="rotate(45 12 12)"/></svg>
                 <p class="text-sm font-medium text-white" data-i18n="dropText">Drop image here or <span class="text-blue-400 underline">browse</span></p>
                 <input type="file" id="file-input-crop" accept="image/*" class="hidden">
             </div>
             <div id="preview-container-crop" class="hidden space-y-4">
+                <div id="gif-shortcut-crop" class="hidden bg-cyan-900/60 border border-cyan-500 p-3 rounded-lg flex items-center justify-between">
+                    <span class="text-xs text-cyan-200" data-i18n="animatedGifDetected">Animated GIF detected!</span>
+                    <button onclick="switchTab('gifmod')" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-xs font-bold rounded" data-i18n="goToGifTools">Go to GIF Tools</button>
+                </div>
                 <div class="bg-darkbg p-2 rounded-lg border border-bordercol overflow-hidden flex justify-center items-center" style="max-height: 400px;">
                     <img id="image-preview-crop" class="max-w-full max-h-full block">
                 </div>
-                
-                <div class="flex gap-2 justify-center">
-                    <button onclick="cropper.setAspectRatio(1)" class="px-3 py-1 bg-inputbg rounded text-xs text-white hover:bg-bordercol">1:1 (Kare)</button>
-                    <button onclick="cropper.setAspectRatio(16/9)" class="px-3 py-1 bg-inputbg rounded text-xs text-white hover:bg-bordercol">16:9</button>
-                    <button onclick="cropper.setAspectRatio(NaN)" class="px-3 py-1 bg-inputbg rounded text-xs text-white hover:bg-bordercol" data-i18n="crpFree">Free</button>
-                </div>
+                <button id="action-btn-crop" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnCrop">
+                    Crop and Download
+                </button>
+            </div>
+        </div>
 
-                <div class="flex gap-3">
-                    <select id="format-select-crop" class="w-1/3 bg-inputbg border border-bordercol rounded-lg p-3 text-sm focus:outline-none focus:border-blue-400 text-white font-semibold">
-                        <option value="image/jpeg">JPG</option>
-                        <option value="image/png">PNG</option>
-                        <option value="image/webp">WebP</option>
-                    </select>
-                    <button id="action-btn-crop" class="w-2/3 bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnCrop">
-                        Crop and Download
-                    </button>
+        <!-- ================= 6. GIF MAKER (AŞAMA 1) ================= -->
+        <div id="sec-gifmaker" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold text-white" data-i18n="gmTitle">GIF Maker</h3>
+                <p class="text-xs text-gray-200" data-i18n="gmDesc">Create animated GIFs from multiple images with custom timing and dimensions.</p>
+            </div>
+            <div id="drop-zone-gm" class="border-2 border-dashed border-bordercol rounded-xl p-6 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-4">
+                <p class="text-sm font-medium text-white" data-i18n="gmDropText">Drop images for GIF or <span class="text-blue-400 underline">browse</span></p>
+                <input type="file" id="file-input-gm" accept="image/*" multiple class="hidden">
+            </div>
+            <div id="preview-container-gm" class="hidden space-y-4">
+                <!-- Sürükle-bırak sıralanabilir kare listesi -->
+                <div>
+                    <label class="block text-xs font-bold text-white uppercase tracking-wider mb-1" data-i18n="gmFramesLabel">Frames (Drag to reorder):</label>
+                    <div id="gm-frames-list" class="flex gap-2 overflow-x-auto p-2 bg-darkbg rounded-lg border border-bordercol min-h-[90px]"></div>
                 </div>
+                <!-- Ayarlar -->
+                <div class="bg-darkbg/60 p-4 rounded-xl border border-bordercol space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="gmBatchDelay">Default Delay (ms)</span>
+                            <input type="number" id="gm-global-delay" value="200" min="20" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="gmLoopCount">Loop Count (0=Infinite)</span>
+                            <input type="number" id="gm-loop" value="0" min="0" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="gmWidth">Width (px)</span>
+                            <input type="number" id="gm-width" placeholder="Auto" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="gmHeight">Height (px)</span>
+                            <input type="number" id="gm-height" placeholder="Auto" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                        </div>
+                    </div>
+                </div>
+                <!-- İlerleme Çubuğu ve İptal -->
+                <div id="gm-progress-box" class="hidden space-y-1">
+                    <div class="flex justify-between text-xs text-gray-300">
+                        <span id="gm-progress-text">Generating GIF...</span>
+                        <button id="gm-cancel-btn" class="text-red-400 hover:underline" data-i18n="cancel">Cancel</button>
+                    </div>
+                    <div class="w-full bg-inputbg h-2 rounded-full overflow-hidden">
+                        <div id="gm-progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-150"></div>
+                    </div>
+                </div>
+                <button id="action-btn-gm" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnMakeGif">
+                    Generate GIF
+                </button>
+                <!-- Oluşan GIF Önizlemesi -->
+                <div id="gm-result-box" class="hidden text-center space-y-2 pt-2 border-t border-bordercol">
+                    <p class="text-xs text-cyan-400 font-bold" data-i18n="gmResultReady">GIF Ready!</p>
+                    <img id="gm-result-img" class="max-h-48 mx-auto rounded border border-bordercol">
+                    <p id="gm-result-size" class="text-xs text-gray-300"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 7. GIF SPLITTER (AŞAMA 1) ================= -->
+        <div id="sec-gifsplitter" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold text-white" data-i18n="gsTitle">GIF Splitter</h3>
+                <p class="text-xs text-gray-200" data-i18n="gsDesc">Extract all frames from an animated GIF.</p>
+            </div>
+            <div id="drop-zone-gs" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
+                <p class="text-sm font-medium text-white" data-i18n="dropText">Drop animated GIF here or <span class="text-blue-400 underline">browse</span></p>
+                <input type="file" id="file-input-gs" accept="image/gif" class="hidden">
+            </div>
+            <div id="preview-container-gs" class="hidden space-y-4">
+                <div id="gs-frames-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-56 overflow-y-auto bg-darkbg p-2 rounded-lg border border-bordercol"></div>
+                <div id="gs-progress-box" class="hidden space-y-1">
+                    <div class="flex justify-between text-xs text-gray-300">
+                        <span id="gs-progress-text">Extracting frames...</span>
+                    </div>
+                    <div class="w-full bg-inputbg h-2 rounded-full overflow-hidden">
+                        <div id="gs-progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-150"></div>
+                    </div>
+                </div>
+                <button id="action-btn-gs" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnDownloadZip">
+                    Download All as ZIP (PNG)
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= 8. GIF SPEED / REVERSE / LOOP (AŞAMA 1) ================= -->
+        <div id="sec-gifspeed" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold text-white" data-i18n="gspTitle">GIF Speed, Reverse & Loop</h3>
+                <p class="text-xs text-gray-200" data-i18n="gspDesc">Change animation speed, reverse frames or set loop count.</p>
+            </div>
+            <div id="drop-zone-gsp" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
+                <p class="text-sm font-medium text-white" data-i18n="dropText">Drop animated GIF here or <span class="text-blue-400 underline">browse</span></p>
+                <input type="file" id="file-input-gsp" accept="image/gif" class="hidden">
+            </div>
+            <div id="preview-container-gsp" class="hidden space-y-4">
+                <div class="flex justify-center bg-darkbg p-2 rounded-lg border border-bordercol">
+                    <img id="gsp-preview-img" class="max-h-48 object-contain rounded-md">
+                </div>
+                <div class="bg-darkbg/60 p-4 rounded-xl border border-bordercol space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-white uppercase tracking-wider mb-1" data-i18n="gspSpeedLabel">Speed Multiplier</label>
+                        <select id="gsp-speed" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                            <option value="0.25">0.25x (Very Slow)</option>
+                            <option value="0.5">0.5x (Slow)</option>
+                            <option value="1" selected>1.0x (Normal)</option>
+                            <option value="2">2.0x (Fast)</option>
+                            <option value="4">4.0x (Very Fast)</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="checkbox" id="gsp-reverse" class="rounded bg-inputbg border-bordercol text-blue-600 focus:ring-blue-500 h-4 w-4">
+                        <label for="gsp-reverse" class="text-xs font-semibold text-white cursor-pointer select-none" data-i18n="gspReverseLabel">Reverse Animation</label>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="gmLoopCount">Loop Count (0=Infinite)</span>
+                        <input type="number" id="gsp-loop" value="0" min="0" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                    </div>
+                </div>
+                <div id="gsp-progress-box" class="hidden space-y-1">
+                    <div class="w-full bg-inputbg h-2 rounded-full overflow-hidden">
+                        <div id="gsp-progress-bar" class="bg-blue-500 h-full w-0"></div>
+                    </div>
+                </div>
+                <button id="action-btn-gsp" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnProcessGif">
+                    Process and Download GIF
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= 9. GIF RESIZE / CROP / ROTATE (AŞAMA 1) ================= -->
+        <div id="sec-gifmod" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold text-white" data-i18n="gmodTitle">GIF Resize, Crop & Rotate</h3>
+                <p class="text-xs text-gray-200" data-i18n="gmodDesc">Apply dimension changes or crop to all frames of an animated GIF.</p>
+            </div>
+            <div id="drop-zone-gmod" class="border-2 border-dashed border-bordercol rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all bg-darkbg/50 mb-6">
+                <p class="text-sm font-medium text-white" data-i18n="dropText">Drop animated GIF here or <span class="text-blue-400 underline">browse</span></p>
+                <input type="file" id="file-input-gmod" accept="image/gif" class="hidden">
+            </div>
+            <div id="preview-container-gmod" class="hidden space-y-4">
+                <div class="flex justify-center bg-darkbg p-2 rounded-lg border border-bordercol">
+                    <img id="gmod-preview-img" class="max-h-48 object-contain rounded-md">
+                </div>
+                <div class="bg-darkbg/60 p-4 rounded-xl border border-bordercol space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="newWidth">New Width</span>
+                            <input type="number" id="gmod-width" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-gray-200 font-bold block mb-1 uppercase" data-i18n="newHeight">New Height</span>
+                            <input type="number" id="gmod-height" class="w-full bg-inputbg border border-bordercol rounded-lg p-2 text-sm text-white font-semibold">
+                        </div>
+                    </div>
+                </div>
+                <div id="gmod-progress-box" class="hidden space-y-1">
+                    <div class="flex justify-between text-xs text-gray-300">
+                        <span id="gmod-progress-text">Processing all frames...</span>
+                    </div>
+                    <div class="w-full bg-inputbg h-2 rounded-full overflow-hidden">
+                        <div id="gmod-progress-bar" class="bg-blue-500 h-full w-0"></div>
+                    </div>
+                </div>
+                <button id="action-btn-gmod" class="w-full bg-blue-600 hover:bg-blue-500 transition-colors font-bold py-3 rounded-lg shadow-lg text-sm text-white" data-i18n="btnProcessFrames">
+                    Process All Frames & Download GIF
+                </button>
             </div>
         </div>
 
@@ -296,7 +445,9 @@
         // --- MULTILANGUAGE (ÇOKLU DİL) MANTIĞI ---
         const i18n = {
             en: {
+                catImage: "Image Tools", catGif: "GIF & Animation Tools",
                 tabFormat: "Format", tabResizer: "Size", tabCompressor: "Compress", tabFilters: "Filters", tabCrop: "Crop",
+                tabGifMaker: "GIF Maker", tabGifSplitter: "GIF Splitter", tabGifSpeed: "Speed / Loop", tabGifMod: "GIF Resize/Crop",
                 fmtTitle: "Batch Format Converter", fmtDesc: "Convert multiple JPG, PNG, WEBP, BMP files at once.",
                 dropText: "Drop image here or <span class='text-blue-400 underline'>browse</span>",
                 dropBatchText: "Drop images here or <span class='text-blue-400 underline'>browse</span>", 
@@ -304,16 +455,26 @@
                 resTitle: "Image Resizer", resDesc: "Adjust the pixel dimensions (width/height) of your images.", resFormat: "Target Format:",
                 origSize: "Original:", newWidth: "New Width", newHeight: "New Height", lockAspect: "Lock aspect ratio", btnResize: "Resize and Download",
                 cmpTitle: "Image Compressor", cmpDesc: "Reduce file size by adjusting quality.",
-                cmpQuality: "Compression Quality", cmpNote: "Note: PNG format does not support compression. Select JPG or WebP output format.", btnCompress: "Compress and Download",
+                cmpQuality: "Compression Quality", cmpNote: "Note: PNG format does not support compression.", btnCompress: "Compress and Download",
                 filTitle: "Color Settings and Filters", filDesc: "Apply special color profiles and adjust lighting.",
                 presets: "Presets", preReset: "Reset", preCyber: "Cyberpunk", preBw: "B&W", preSepia: "Sepia", preRetro: "Retro", preInvert: "Invert",
                 brTitle: "Brightness", ctTitle: "Contrast", stTitle: "Saturation", blTitle: "Blur", btnApply: "Apply and Download",
                 crpTitle: "Image Cropper", crpDesc: "Crop your images professionally without losing quality.", crpFree: "Free", btnCrop: "Crop and Download",
                 alertInvalid: "Please upload a valid image file!", alertRes: "Please enter a valid resolution!", msgBatch: "files selected for conversion.",
-                errBlobNull: "Conversion failed or format not supported by your browser.", errMaxDim: "Dimensions cannot exceed 8000px per edge!"
+                errBlobNull: "Conversion failed or format not supported by your browser.", errMaxDim: "Dimensions cannot exceed 8000px per edge!",
+                animatedGifDetected: "Animated GIF detected!", goToGifTools: "Go to GIF Tools",
+                gmTitle: "GIF Maker", gmDesc: "Create animated GIFs from multiple images.", gmDropText: "Drop images for GIF or <span class='text-blue-400 underline'>browse</span>",
+                gmFramesLabel: "Frames (Drag to reorder):", gmBatchDelay: "Default Delay (ms)", gmLoopCount: "Loop Count (0=Infinite)", gmWidth: "Width (px)", gmHeight: "Height (px)",
+                btnMakeGif: "Generate GIF", gmResultReady: "GIF Ready!", cancel: "Cancel",
+                gsTitle: "GIF Splitter", gsDesc: "Extract all frames from an animated GIF.", btnDownloadZip: "Download All as ZIP (PNG)",
+                gspTitle: "GIF Speed, Reverse & Loop", gspDesc: "Change animation speed, reverse frames or set loop count.", gspSpeedLabel: "Speed Multiplier", gspReverseLabel: "Reverse Animation", btnProcessGif: "Process and Download GIF",
+                gmodTitle: "GIF Resize, Crop & Rotate", gmodDesc: "Apply dimension changes or crop to all frames of an animated GIF.", btnProcessFrames: "Process All Frames & Download GIF",
+                warnHeavy: "Warning: High frame count or pixel size detected. Processing may take a while."
             },
             tr: {
+                catImage: "Görsel Araçları", catGif: "GIF & Animasyon Araçları",
                 tabFormat: "Format", tabResizer: "Boyut", tabCompressor: "Sıkıştırma", tabFilters: "Filtreler", tabCrop: "Kırpma",
+                tabGifMaker: "GIF Yapıcı", tabGifSplitter: "GIF Bölücü", tabGifSpeed: "Hız / Döngü", tabGifMod: "GIF Boyutlandırma",
                 fmtTitle: "Çoklu Format Dönüştürücü", fmtDesc: "Aynı anda birden fazla resmi seçip tek tıkla dönüştürün.",
                 dropText: "Görseli buraya bırakın veya <span class='text-blue-400 underline'>seçin</span>",
                 dropBatchText: "Görselleri buraya bırakın veya <span class='text-blue-400 underline'>seçin</span>", 
@@ -321,13 +482,21 @@
                 resTitle: "Çözünürlük Değiştirici (Resizer)", resDesc: "Görsellerinizin piksel ölçülerini (geniş/yüksek) ayarlayın.", resFormat: "Hedef Format:",
                 origSize: "Orijinal:", newWidth: "Yeni Genişlik", newHeight: "Yeni Yükseklik", lockAspect: "En-boy oranını sabitle", btnResize: "Boyutlandır ve İndir",
                 cmpTitle: "Görsel Sıkıştırıcı", cmpDesc: "Kaliteyi ayarlayarak dosya boyutunu küçültün.",
-                cmpQuality: "Sıkıştırma Kalitesi", cmpNote: "Not: PNG formatı sıkıştırma desteklemez, çıktı formatını JPG veya WebP seçin.", btnCompress: "Sıkıştır ve İndir",
+                cmpQuality: "Sıkıştırma Kalitesi", cmpNote: "Not: PNG formatı sıkıştırma desteklemez.", btnCompress: "Sıkıştır ve İndir",
                 filTitle: "Renk Ayarları ve Filtreler", filDesc: "Görselinize özel renk profilleri uygulayın ve ışık ayarlarını yapın.",
                 presets: "Hazır Filtreler", preReset: "Sıfırla", preCyber: "Siberpunk", preBw: "Siyah Beyaz", preSepia: "Sepya", preRetro: "Retro", preInvert: "Negatif",
                 brTitle: "Parlaklık", ctTitle: "Kontrast", stTitle: "Doygunluk", blTitle: "Bulanıklık", btnApply: "Uygula ve İndir",
                 crpTitle: "Görsel Kırpıcı (Cropper)", crpDesc: "Görsellerin istediğiniz kısmını kalite kaybı olmadan kesin.", crpFree: "Serbest", btnCrop: "Kırp ve İndir",
                 alertInvalid: "Lütfen geçerli bir görsel yükleyin!", alertRes: "Geçerli bir çözünürlük girin!", msgBatch: "dosya dönüştürülmek üzere seçildi.",
-                errBlobNull: "Dönüştürme başarısız oldu veya tarayıcınız bu formatı desteklemiyor.", errMaxDim: "Boyutlar kenar başına 8000 pikseli geçemez!"
+                errBlobNull: "Dönüştürme başarısız oldu veya tarayıcınız bu formatı desteklemiyor.", errMaxDim: "Boyutlar kenar başına 8000 pikseli geçemez!",
+                animatedGifDetected: "Animasyonlu GIF tespit edildi!", goToGifTools: "GIF Araçlarına Git",
+                gmTitle: "GIF Yapıcı (Maker)", gmDesc: "Birden fazla görselden animasyonlu GIF oluşturun.", gmDropText: "Görselleri bırakın veya <span class='text-blue-400 underline'>seçin</span>",
+                gmFramesLabel: "Kareler (Sıralamak için sürükleyin):", gmBatchDelay: "Varsayılan Gecikme (ms)", gmLoopCount: "Döngü Sayısı (0=Sonsuz)", gmWidth: "Genişlik (px)", gmHeight: "Yükseklik (px)",
+                btnMakeGif: "GIF Oluştur", gmResultReady: "GIF Hazır!", cancel: "İptal",
+                gsTitle: "GIF Bölücü (Splitter)", gsDesc: "Animasyonlu GIF'in tüm karelerini ayıklayın.", btnDownloadZip: "Tümünü ZIP Olarak İndir (PNG)",
+                gspTitle: "GIF Hız, Ters Çevirme & Döngü", gspDesc: "Animasyon hızını değiştirin, ters çevirin veya döngü ayarlayın.", gspSpeedLabel: "Hız Çarpanı", gspReverseLabel: "Ters Çevir", btnProcessGif: "İşle ve GIF İndir",
+                gmodTitle: "GIF Boyutlandırma & Kırpma", gmodDesc: "Animasyonlu GIF'in tüm karelerine boyut veya kırpma uygulayın.", btnProcessFrames: "Tüm Kareleri İşle ve İndir",
+                warnHeavy: "Uyarı: Yüksek kare sayısı veya piksel boyutu tespit edildi. İşlem zaman alabilir."
             }
         };
 
@@ -343,73 +512,15 @@
                 if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
             });
 
-            if(filesConv.length > 0) {
-                renderThumbnails();
-            }
+            if(filesConv.length > 0) renderThumbnails();
         }
-
-        // --- YARDIMCI FONKSİYONLAR VE ENCODER ---
 
         function getBaseName(filename) {
             const idx = filename.lastIndexOf('.');
             return idx !== -1 ? filename.substring(0, idx) : filename;
         }
 
-        function encodeBMP(imageData) {
-            const width = imageData.width;
-            const height = imageData.height;
-            const padding = (4 - ((width * 3) % 4)) % 4;
-            const rowSize = (width * 3) + padding;
-            const pixelArraySize = rowSize * height;
-            const fileSize = 54 + pixelArraySize;
-
-            const buffer = new ArrayBuffer(fileSize);
-            const dataView = new DataView(buffer);
-
-            dataView.setUint8(0, 0x42); 
-            dataView.setUint8(1, 0x4D); 
-            dataView.setUint32(2, fileSize, true); 
-            dataView.setUint32(6, 0, true);
-            dataView.setUint32(10, 54, true); 
-
-            dataView.setUint32(14, 40, true);
-            dataView.setInt32(18, width, true);
-            dataView.setInt32(22, height, true);
-            dataView.setUint16(26, 1, true); 
-            dataView.setUint16(28, 24, true); 
-            dataView.setUint32(30, 0, true); 
-            dataView.setUint32(34, pixelArraySize, true);
-            dataView.setInt32(38, 2835, true);
-            dataView.setInt32(42, 2835, true);
-            dataView.setUint32(46, 0, true);
-            dataView.setUint32(50, 0, true);
-
-            const pixels = new Uint8Array(buffer, 54);
-            const data = imageData.data;
-            let offset = 0;
-
-            for (let y = height - 1; y >= 0; y--) {
-                for (let x = 0; x < width; x++) {
-                    const i = (y * width + x) * 4;
-                    pixels[offset++] = data[i + 2]; 
-                    pixels[offset++] = data[i + 1]; 
-                    pixels[offset++] = data[i];     
-                }
-                offset += padding;
-            }
-            return new Blob([buffer], { type: 'image/bmp' });
-        }
-
         function downloadCanvasFix(canvas, fileNameBase, format, quality = 0.92, callback = null) {
-            if (format === 'image/bmp') {
-                const ctx = canvas.getContext('2d');
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const bmpBlob = encodeBMP(imgData);
-                if (callback) callback(bmpBlob, 'bmp');
-                else downloadBlob(bmpBlob, fileNameBase, 'bmp');
-                return;
-            }
-
             canvas.toBlob((blob) => {
                 if (!blob) {
                     alert(i18n[currentLang].errBlobNull);
@@ -432,28 +543,30 @@
             setTimeout(() => URL.revokeObjectURL(url), 1000); 
         }
 
-        // --- SEKME (TAB) DEĞİŞTİRME MANTIĞI ---
-        const tabs = ['conv', 'res', 'comp', 'fil', 'crop'];
+        // --- SEKME (TAB) YÖNETİMİ ---
+        const tabs = ['converter', 'resizer', 'compressor', 'filter', 'crop', 'gifmaker', 'gifsplitter', 'gifspeed', 'gifmod'];
         function switchTab(activeTab) {
-            const activeClass = "flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide";
-            const inactiveClass = "flex-1 min-w-[70px] px-2 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide";
+            const activeClass = "px-3 py-2 text-[11px] sm:text-sm rounded-lg bg-blue-600 text-white font-bold shadow-md transition-all tracking-wide";
+            const inactiveClass = "px-3 py-2 text-[11px] sm:text-sm rounded-lg text-gray-300 hover:text-white font-semibold transition-all tracking-wide";
             
             tabs.forEach(t => {
-                document.getElementById(`btn-${t === 'conv' ? 'converter' : t === 'res' ? 'resizer' : t === 'comp' ? 'compressor' : t === 'fil' ? 'filter' : 'crop'}`).className = activeTab === t ? activeClass : inactiveClass;
-                document.getElementById(`sec-${t === 'conv' ? 'converter' : t === 'res' ? 'resizer' : t === 'comp' ? 'compressor' : t === 'fil' ? 'filter' : 'crop'}`).classList.toggle('hidden', activeTab !== t);
+                const btn = document.getElementById(`btn-${t}`);
+                const sec = document.getElementById(`sec-${t}`);
+                if(btn) btn.className = t === activeTab ? activeClass : inactiveClass;
+                if(sec) sec.classList.toggle('hidden', t !== activeTab);
             });
             
             if(activeTab === 'crop' && cropper) cropper.replace(document.getElementById('image-preview-crop').src);
         }
 
-        document.getElementById('btn-converter').addEventListener('click', () => switchTab('conv'));
-        document.getElementById('btn-resizer').addEventListener('click', () => switchTab('res'));
-        document.getElementById('btn-compressor').addEventListener('click', () => switchTab('comp'));
-        document.getElementById('btn-filter').addEventListener('click', () => switchTab('fil'));
-        document.getElementById('btn-crop').addEventListener('click', () => switchTab('crop'));
+        tabs.forEach(t => {
+            const b = document.getElementById(`btn-${t}`);
+            if(b) b.addEventListener('click', () => switchTab(t));
+        });
 
         function setupDropZone(dropId, inputId, handleFn, isMulti = false) {
             const drop = document.getElementById(dropId); const input = document.getElementById(inputId);
+            if(!drop || !input) return;
             drop.addEventListener('click', () => input.click());
             input.addEventListener('change', (e) => handleFn(isMulti ? e.target.files : e.target.files[0]));
             drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('border-blue-400'); });
@@ -464,418 +577,511 @@
             });
         }
 
-        // --- 1. FORMAT CONVERTER (YENİLENEN ÇOKLU İŞLEM & JSZIP) ---
-        let filesConv = [];
+        // Yardımcı: Dosyanın GIF olup olmadığını kontrol et (Magic Bytes veya uzantı/mime)
+        async function checkIsAnimatedGif(file) {
+            if(file.type === 'image/gif') return true;
+            return false;
+        }
 
+        // ================= 1. FORMAT CONVERTER =================
+        let filesConv = [];
         function renderThumbnails() {
             const listContainer = document.getElementById('thumb-list-conv');
             listContainer.innerHTML = '';
-            
             if(filesConv.length === 0) {
                 document.getElementById('preview-container-conv').classList.add('hidden');
                 return;
             }
-
             filesConv.forEach((file, index) => {
                 const item = document.createElement('div');
                 item.className = "flex items-center justify-between bg-cardbg p-2 rounded-md border border-bordercol";
-                
-                const leftDiv = document.createElement('div');
-                leftDiv.className = "flex items-center gap-3 overflow-hidden";
-                
-                const img = document.createElement('img');
-                img.className = "w-10 h-10 object-cover rounded border border-bordercol";
-                const objUrl = URL.createObjectURL(file);
-                img.src = objUrl;
-                img.onload = () => URL.revokeObjectURL(objUrl);
-
-                const infoDiv = document.createElement('div');
-                infoDiv.className = "overflow-hidden";
-                const nameP = document.createElement('p');
-                nameP.className = "text-xs font-medium truncate text-white";
-                nameP.textContent = file.name;
-                const sizeP = document.createElement('p');
-                sizeP.className = "text-[10px] text-gray-300";
-                sizeP.textContent = (file.size / 1024).toFixed(1) + ' KB';
-
-                infoDiv.appendChild(nameP);
-                infoDiv.appendChild(sizeP);
-                leftDiv.appendChild(img);
-                leftDiv.appendChild(infoDiv);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = "text-red-400 hover:text-red-300 px-2 font-bold text-sm";
-                removeBtn.textContent = "✕";
-                removeBtn.onclick = () => {
-                    filesConv.splice(index, 1);
-                    renderThumbnails();
-                };
-
-                item.appendChild(leftDiv);
-                item.appendChild(removeBtn);
-                listContainer.appendChild(item);
+                const leftDiv = document.createElement('div'); leftDiv.className = "flex items-center gap-3 overflow-hidden";
+                const img = document.createElement('img'); img.className = "w-10 h-10 object-cover rounded border border-bordercol";
+                const objUrl = URL.createObjectURL(file); img.src = objUrl; img.onload = () => URL.revokeObjectURL(objUrl);
+                const infoDiv = document.createElement('div'); infoDiv.className = "overflow-hidden";
+                const nameP = document.createElement('p'); nameP.className = "text-xs font-medium truncate text-white"; nameP.textContent = file.name;
+                const sizeP = document.createElement('p'); sizeP.className = "text-[10px] text-gray-300"; sizeP.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                infoDiv.appendChild(nameP); infoDiv.appendChild(sizeP); leftDiv.appendChild(img); leftDiv.appendChild(infoDiv);
+                const removeBtn = document.createElement('button'); removeBtn.className = "text-red-400 hover:text-red-300 px-2 font-bold text-sm"; removeBtn.textContent = "✕";
+                removeBtn.onclick = () => { filesConv.splice(index, 1); renderThumbnails(); };
+                item.appendChild(leftDiv); item.appendChild(removeBtn); listContainer.appendChild(item);
             });
-
             document.getElementById('preview-container-conv').classList.remove('hidden');
         }
-
         setupDropZone('drop-zone-conv', 'file-input-conv', (filesList) => {
             const validFiles = Array.from(filesList).filter(f => f.type.startsWith('image/'));
             if(validFiles.length === 0) return alert(i18n[currentLang].alertInvalid);
-            
             filesConv = filesConv.concat(validFiles);
             renderThumbnails();
-        }, true); 
+        }, true);
 
         document.getElementById('action-btn-conv').addEventListener('click', async () => {
             if (filesConv.length === 0) return;
             const targetFormat = document.getElementById('format-select-conv').value;
             const btn = document.getElementById('action-btn-conv');
-            
             btn.disabled = true;
-            let processedCount = 0;
-            const totalFiles = filesConv.length;
-            const zip = new JSZip();
-            const usedNames = {};
+            let processedCount = 0; const totalFiles = filesConv.length; const zip = new JSZip(); const usedNames = {};
 
             for (let i = 0; i < filesConv.length; i++) {
                 const file = filesConv[i];
                 btn.textContent = `${processedCount + 1} / ${totalFiles}`;
-
                 try {
-                    let bitmap;
-                    if (window.createImageBitmap) {
-                        bitmap = await createImageBitmap(file);
-                    } else {
-                        const blobUrl = URL.createObjectURL(file);
-                        bitmap = await new Promise((res, rej) => {
-                            const im = new Image();
-                            im.onload = () => { res(im); URL.revokeObjectURL(blobUrl); };
-                            im.onerror = rej;
-                            im.src = blobUrl;
-                        });
-                    }
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = bitmap.width; 
-                    canvas.height = bitmap.height; 
-                    const ctx = canvas.getContext('2d');
-                    
-                    if (targetFormat === 'image/jpeg' || targetFormat === 'image/bmp') { 
-                        ctx.fillStyle = '#FFFFFF'; 
-                        ctx.fillRect(0, 0, canvas.width, canvas.height); 
-                    }
+                    let bitmap = window.createImageBitmap ? await createImageBitmap(file) : await new Promise(res => {
+                        const im = new Image(); const u = URL.createObjectURL(file);
+                        im.onload = () => { res(im); URL.revokeObjectURL(u); }; im.src = u;
+                    });
+                    const canvas = document.createElement('canvas'); canvas.width = bitmap.width; canvas.height = bitmap.height; const ctx = canvas.getContext('2d');
+                    if (targetFormat === 'image/jpeg' || targetFormat === 'image/bmp') { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
                     ctx.drawImage(bitmap, 0, 0);
-
                     if (bitmap.close) bitmap.close();
-
                     await new Promise((resolve) => {
                         downloadCanvasFix(canvas, getBaseName(file.name), targetFormat, 0.92, (blob, ext) => {
                             if (blob) {
-                                let base = getBaseName(file.name);
-                                let fileName = `${base}.${ext}`;
-                                
-                                if (usedNames[fileName]) {
-                                    usedNames[fileName]++;
-                                    fileName = `${base} (${usedNames[fileName]}).${ext}`;
-                                } else {
-                                    usedNames[fileName] = 1;
-                                }
-
-                                if (totalFiles === 1) {
-                                    const url = URL.createObjectURL(blob);
-                                    const a = document.createElement('a');
-                                    a.href = url;
-                                    a.download = fileName;
-                                    a.click();
-                                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                                } else {
-                                    zip.file(fileName, blob);
-                                }
+                                let base = getBaseName(file.name); let fileName = `${base}.${ext}`;
+                                if (usedNames[fileName]) { usedNames[fileName]++; fileName = `${base} (${usedNames[fileName]}).${ext}`; } else { usedNames[fileName] = 1; }
+                                if (totalFiles === 1) downloadBlob(blob, base, ext); else zip.file(fileName, blob);
                             }
                             resolve();
                         });
                     });
-
-                } catch (err) {
-                    console.error("Conversion error:", err);
-                }
-
+                } catch (err) { console.error(err); }
                 processedCount++;
             }
-
             if (totalFiles > 1) {
                 const content = await zip.generateAsync({ type: "blob" });
-                const zipUrl = URL.createObjectURL(content);
-                const a = document.createElement('a');
-                a.href = zipUrl;
-                a.download = "converted_images.zip";
-                a.click();
-                setTimeout(() => URL.revokeObjectURL(zipUrl), 1000);
+                downloadBlob(content, "converted_images", "zip");
             }
-
-            btn.disabled = false;
-            btn.textContent = i18n[currentLang].btnConvertBatch;
+            btn.disabled = false; btn.textContent = i18n[currentLang].btnConvertBatch;
         });
 
-        // --- 2. IMAGE RESIZER ---
-        let fileRes = null; let origW = 0; let origH = 0;
-        const wInput = document.getElementById('width-input-res'); const hInput = document.getElementById('height-input-res'); const lockRes = document.getElementById('lock-aspect-res');
-        
-        setupDropZone('drop-zone-res', 'file-input-res', (file) => {
-            if (!file || !file.type.startsWith('image/')) return alert(i18n[currentLang].alertInvalid);
-            fileRes = file; document.getElementById('file-name-res').textContent = file.name;
-            
-            const resFormatSelect = document.getElementById('format-select-res');
-            if (['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-                resFormatSelect.value = file.type;
+        // ================= 2, 3, 4, 5. RESIZER / COMPRESSOR / FILTER / CROP + GIF KISAYOLU =================
+        async function handleImageToolInput(file, previewId, containerId, shortcutId, dimsId) {
+            if(!file || !file.type.startsWith('image/')) return alert(i18n[currentLang].alertInvalid);
+            const isGif = await checkIsAnimatedGif(file);
+            const shortcutEl = document.getElementById(shortcutId);
+            if(isGif) {
+                if(shortcutEl) shortcutEl.classList.remove('hidden');
             } else {
-                resFormatSelect.value = 'image/png';
+                if(shortcutEl) shortcutEl.classList.add('hidden');
             }
-
             const reader = new FileReader();
             reader.onload = (e) => {
-                document.getElementById('image-preview-res').src = e.target.result;
-                const img = new Image(); img.onload = () => {
-                    origW = img.width; origH = img.height; wInput.value = origW; hInput.value = origH;
-                    document.getElementById('original-dims-res').textContent = `${origW} x ${origH} px`;
-                    document.getElementById('preview-container-res').classList.remove('hidden');
-                }; img.src = e.target.result;
+                document.getElementById(previewId).src = e.target.result;
+                document.getElementById(containerId).classList.remove('hidden');
+                if(dimsId) {
+                    const im = new Image(); im.onload = () => {
+                        document.getElementById(dimsId).textContent = `${im.width} x ${im.height} px`;
+                        origW = im.width; origH = im.height;
+                        document.getElementById('width-input-res').value = origW;
+                        document.getElementById('height-input-res').value = origH;
+                    }; im.src = e.target.result;
+                }
             }; reader.readAsDataURL(file);
+        }
+
+        let fileRes = null, origW = 0, origH = 0;
+        setupDropZone('drop-zone-res', 'file-input-res', f => { fileRes = f; document.getElementById('file-name-res').textContent = f.name; handleImageToolInput(f, 'image-preview-res', 'preview-container-res', 'gif-shortcut-res', 'original-dims-res'); });
+        
+        let fileComp = null;
+        setupDropZone('drop-zone-comp', 'file-input-comp', f => { fileComp = f; document.getElementById('file-name-comp').textContent = f.name; document.getElementById('file-size-comp').textContent = `${(f.size/1024).toFixed(1)} KB`; handleImageToolInput(f, 'image-preview-comp', 'preview-container-comp', 'gif-shortcut-comp'); });
+
+        let fileFil = null;
+        setupDropZone('drop-zone-fil', 'file-input-fil', f => { fileFil = f; handleImageToolInput(f, 'image-preview-fil', 'preview-container-fil', 'gif-shortcut-fil'); });
+
+        let fileCrop = null, cropper = null;
+        setupDropZone('drop-zone-crop', 'file-input-crop', f => { 
+            fileCrop = f; handleImageToolInput(f, 'image-preview-crop', 'preview-container-crop', 'gif-shortcut-crop');
+            const imgEl = document.getElementById('image-preview-crop');
+            if(cropper) cropper.destroy();
+            cropper = new Cropper(imgEl, { viewMode: 1, background: false, autoCropArea: 0.8 });
         });
 
-        wInput.addEventListener('input', () => { if (lockRes.checked && origW > 0) { const v = parseInt(wInput.value); if (!isNaN(v)) hInput.value = Math.round((v / origW) * origH); }});
-        hInput.addEventListener('input', () => { if (lockRes.checked && origH > 0) { const v = parseInt(hInput.value); if (!isNaN(v)) wInput.value = Math.round((v / origH) * origW); }});
-        
+        // Resizer İşlem Butonu
         document.getElementById('action-btn-res').addEventListener('click', () => {
-            if (!fileRes) return;
-            const tWidth = parseInt(wInput.value); const tHeight = parseInt(hInput.value);
-            if (!tWidth || !tHeight || tWidth <= 0 || tHeight <= 0) return alert(i18n[currentLang].alertRes);
-            
-            if (tWidth > 8000 || tHeight > 8000) return alert(i18n[currentLang].errMaxDim);
-
-            const targetFormat = document.getElementById('format-select-res').value;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image(); img.onload = () => {
-                    const canvas = document.createElement('canvas'); canvas.width = tWidth; canvas.height = tHeight; const ctx = canvas.getContext('2d');
-                    if (targetFormat === 'image/jpeg') { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-                    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, 0, 0, tWidth, tHeight);
-                    downloadCanvasFix(canvas, getBaseName(fileRes.name) + `-${tWidth}px`, targetFormat);
-                }; img.src = e.target.result;
-            }; reader.readAsDataURL(fileRes);
+            if(!fileRes) return;
+            const tw = parseInt(document.getElementById('width-input-res').value);
+            const th = parseInt(document.getElementById('height-input-res').value);
+            if(tw > 8000 || th > 8000) return alert(i18n[currentLang].errMaxDim);
+            const fmt = document.getElementById('format-select-res').value;
+            const r = new FileReader();
+            r.onload = e => {
+                const im = new Image(); im.onload = () => {
+                    const c = document.createElement('canvas'); c.width = tw; c.height = th; const x = c.getContext('2d');
+                    if(fmt === 'image/jpeg') { x.fillStyle='#fff'; x.fillRect(0,0,tw,th); }
+                    x.drawImage(im, 0, 0, tw, th);
+                    downloadCanvasFix(c, getBaseName(fileRes.name)+`-${tw}px`, fmt);
+                }; im.src = e.target.result;
+            }; r.readAsDataURL(fileRes);
         });
 
-        // --- 3. IMAGE COMPRESSOR ---
-        let fileComp = null; const qualitySlider = document.getElementById('quality-slider'); const qualityVal = document.getElementById('quality-val');
-        qualitySlider.addEventListener('input', (e) => qualityVal.textContent = `${e.target.value}%`);
-        
-        setupDropZone('drop-zone-comp', 'file-input-comp', (file) => {
-            if (!file || !file.type.startsWith('image/')) return alert(i18n[currentLang].alertInvalid);
-            fileComp = file; document.getElementById('file-name-comp').textContent = file.name;
-            document.getElementById('file-size-comp').textContent = `${i18n[currentLang].origSize} ${(file.size / 1024).toFixed(1)} KB`;
-            const reader = new FileReader();
-            reader.onload = (e) => { document.getElementById('image-preview-comp').src = e.target.result; document.getElementById('preview-container-comp').classList.remove('hidden'); };
-            reader.readAsDataURL(file);
-        });
-
+        // Compressor İşlem Butonu
         document.getElementById('action-btn-comp').addEventListener('click', () => {
-            if (!fileComp) return;
-            const targetFormat = document.getElementById('format-select-comp').value; const quality = parseInt(qualitySlider.value) / 100;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image(); img.onload = () => {
-                    const canvas = document.createElement('canvas'); canvas.width = img.width; canvas.height = img.height; const ctx = canvas.getContext('2d');
-                    if (targetFormat === 'image/jpeg') { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-                    ctx.drawImage(img, 0, 0);
-                    downloadCanvasFix(canvas, getBaseName(fileComp.name) + '-cp', targetFormat, quality);
-                }; img.src = e.target.result;
-            }; reader.readAsDataURL(fileComp);
+            if(!fileComp) return;
+            const q = parseInt(document.getElementById('quality-slider').value) / 100;
+            const fmt = document.getElementById('format-select-comp').value;
+            const r = new FileReader();
+            r.onload = e => {
+                const im = new Image(); im.onload = () => {
+                    const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d');
+                    if(fmt === 'image/jpeg') { x.fillStyle='#fff'; x.fillRect(0,0,im.width,im.height); }
+                    x.drawImage(im, 0, 0);
+                    downloadCanvasFix(c, getBaseName(fileComp.name)+'-cp', fmt, q);
+                }; im.src = e.target.result;
+            }; r.readAsDataURL(fileComp);
         });
 
-        // --- 4. RENK VE FİLTRE ---
-        let fileFil = null; 
-        let filters = { br: 100, ct: 100, st: 100, bl: 0, sep: 0, inv: 0, gr: 0, hue: 0 };
-        
-        const slBr = document.getElementById('sl-br'); const valBr = document.getElementById('val-br');
-        const slCt = document.getElementById('sl-ct'); const valCt = document.getElementById('val-ct');
-        const slSt = document.getElementById('sl-st'); const valSt = document.getElementById('val-st');
-        const slBl = document.getElementById('sl-bl'); const valBl = document.getElementById('val-bl');
-        const previewFil = document.getElementById('image-preview-fil');
+        // Filter İşlem Butonu
+        document.getElementById('action-btn-fil').addEventListener('click', () => {
+            if(!fileFil) return;
+            const fmt = document.getElementById('format-select-fil').value;
+            const r = new FileReader();
+            r.onload = e => {
+                const im = new Image(); im.onload = () => {
+                    const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d');
+                    if(fmt === 'image/jpeg') { x.fillStyle='#fff'; x.fillRect(0,0,im.width,im.height); }
+                    x.filter = document.getElementById('image-preview-fil').style.filter || 'none';
+                    x.drawImage(im, 0, 0);
+                    downloadCanvasFix(c, getBaseName(fileFil.name)+'-flt', fmt);
+                }; im.src = e.target.result;
+            }; r.readAsDataURL(fileFil);
+        });
 
-        setupDropZone('drop-zone-fil', 'file-input-fil', (file) => {
-            if (!file || !file.type.startsWith('image/')) return alert(i18n[currentLang].alertInvalid);
-            fileFil = file; 
-            
-            filters = { br: 100, ct: 100, st: 100, bl: 0, sep: 0, inv: 0, gr: 0, hue: 0 };
-            slBr.value = 100; valBr.textContent = "100%";
-            slCt.value = 100; valCt.textContent = "100%";
-            slSt.value = 100; valSt.textContent = "100%";
-            slBl.value = 0; valBl.textContent = "0px";
-            previewFil.style.filter = "none";
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewFil.src = e.target.result;
-                document.getElementById('preview-container-fil').classList.remove('hidden');
-            }; reader.readAsDataURL(file);
+        // Crop İşlem Butonu
+        document.getElementById('action-btn-crop').addEventListener('click', () => {
+            if(!cropper) return;
+            const c = cropper.getCroppedCanvas({ imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
+            downloadCanvasFix(c, getBaseName(fileCrop.name)+'-crop', 'image/jpeg');
         });
 
         function updateFilters() {
-            filters.br = slBr.value; valBr.textContent = `${filters.br}%`; 
-            filters.ct = slCt.value; valCt.textContent = `${filters.ct}%`;
-            filters.st = slSt.value; valSt.textContent = `${filters.st}%`; 
-            filters.bl = slBl.value; valBl.textContent = `${filters.bl}px`;
-            
-            previewFil.style.filter = `brightness(${filters.br}%) contrast(${filters.ct}%) saturate(${filters.st}%) blur(${filters.bl}px) sepia(${filters.sep}%) invert(${filters.inv}%) grayscale(${filters.gr}%) hue-rotate(${filters.hue}deg)`;
+            const br = document.getElementById('sl-br').value;
+            const ct = document.getElementById('sl-ct').value;
+            document.getElementById('val-br').textContent = br + '%';
+            document.getElementById('val-ct').textContent = ct + '%';
+            document.getElementById('image-preview-fil').style.filter = `brightness(${br}%) contrast(${ct}%)`;
         }
-
-        function applyPreset(type) {
-            filters = { br: 100, ct: 100, st: 100, bl: 0, sep: 0, inv: 0, gr: 0, hue: 0 };
-            if (type === 'cyberpunk') { filters.st = 180; filters.ct = 120; filters.hue = 30; filters.br = 110; }
-            else if (type === 'bw') { filters.gr = 100; filters.ct = 120; }
-            else if (type === 'sepia') { filters.sep = 100; filters.br = 90; filters.ct = 110; }
-            else if (type === 'retro') { filters.sep = 60; filters.st = 80; filters.ct = 90; }
-            else if (type === 'invert') { filters.inv = 100; }
-            
-            slBr.value = filters.br; valBr.textContent = `${filters.br}%`;
-            slCt.value = filters.ct; valCt.textContent = `${filters.ct}%`; 
-            slSt.value = filters.st; valSt.textContent = `${filters.st}%`;
-            slBl.value = filters.bl; valBl.textContent = `${filters.bl}px`;
-            
+        function applyPreset(p) {
+            if(p==='none') { document.getElementById('sl-br').value=100; document.getElementById('sl-ct').value=100; }
+            else if(p==='cyberpunk') { document.getElementById('sl-br').value=120; document.getElementById('sl-ct').value=140; }
             updateFilters();
         }
 
-        document.getElementById('action-btn-fil').addEventListener('click', () => {
-            if (!fileFil) return;
-            const targetFormat = document.getElementById('format-select-fil').value;
-            const reader = new FileReader();
-            
-            reader.onload = (e) => {
-                const img = new Image(); 
-                img.onload = () => {
-                    const canvas = document.createElement('canvas'); 
-                    canvas.width = img.width; 
-                    canvas.height = img.height; 
-                    const ctx = canvas.getContext('2d');
-                    
-                    if (targetFormat === 'image/jpeg') { 
-                        ctx.fillStyle = '#FFFFFF'; 
-                        ctx.fillRect(0, 0, canvas.width, canvas.height); 
-                    }
-                    
-                    const ratio = previewFil.clientWidth > 0 ? (img.naturalWidth / previewFil.clientWidth) : 1;
-                    const scaledBlur = filters.bl * ratio;
 
-                    const supportsCtxFilter = 'filter' in CanvasRenderingContext2D.prototype;
+        // =========================================================================
+        // ======================= AŞAMA 1: GIF ARAÇLARI ===========================
+        // =========================================================================
 
-                    if (supportsCtxFilter) {
-                        ctx.filter = `brightness(${filters.br}%) contrast(${filters.ct}%) saturate(${filters.st}%) blur(${scaledBlur}px) sepia(${filters.sep}%) invert(${filters.inv}%) grayscale(${filters.gr}%) hue-rotate(${filters.hue}deg)`;
-                        ctx.drawImage(img, 0, 0);
-                    } else {
-                        ctx.drawImage(img, 0, 0);
-                        let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        let d = imgData.data;
+        // --- 1. GIF Maker ---
+        let gmFiles = [];
+        const gmFramesList = document.getElementById('gm-frames-list');
+        let gmSortable = null;
 
-                        const br = filters.br / 100;
-                        const ct = filters.ct / 100;
-                        const st = filters.st / 100;
-                        const sep = filters.sep / 100;
-                        const inv = filters.inv / 100;
-                        const gr = filters.gr / 100;
-                        const factor = (259 * (ct * 255 + 255)) / (255 * (259 - ct * 255));
+        setupDropZone('drop-zone-gm', 'file-input-gm', (files) => {
+            const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
+            if(valid.length === 0) return alert(i18n[currentLang].alertInvalid);
+            gmFiles = gmFiles.concat(valid);
+            renderGmFrames();
+            document.getElementById('preview-container-gm').classList.remove('hidden');
+        }, true);
 
-                        for (let i = 0; i < d.length; i += 4) {
-                            let r = d[i], g = d[i+1], b = d[i+2];
-
-                            if (gr > 0) {
-                                let gray = r * 0.299 + g * 0.587 + b * 0.114;
-                                r = r * (1 - gr) + gray * gr;
-                                g = g * (1 - gr) + gray * gr;
-                                b = b * (1 - gr) + gray * gr;
-                            }
-
-                            r = factor * (r * br - 128) + 128;
-                            g = factor * (g * br - 128) + 128;
-                            b = factor * (b * br - 128) + 128;
-
-                            if (st !== 1) {
-                                let gray = r * 0.299 + g * 0.587 + b * 0.114;
-                                r = gray + st * (r - gray);
-                                g = gray + st * (g - gray);
-                                b = gray + st * (b - gray);
-                            }
-
-                            if (sep > 0) {
-                                let sr = (r * 0.393 + g * 0.769 + b * 0.189);
-                                let sg = (r * 0.349 + g * 0.686 + b * 0.168);
-                                let sb = (r * 0.272 + g * 0.534 + b * 0.131);
-                                r = r * (1 - sep) + sr * sep;
-                                g = g * (1 - sep) + sg * sep;
-                                b = b * (1 - sep) + sb * sep;
-                            }
-
-                            if (inv > 0) {
-                                r = r * (1 - inv) + (255 - r) * inv;
-                                g = g * (1 - inv) + (255 - g) * inv;
-                                b = b * (1 - inv) + (255 - b) * inv;
-                            }
-
-                            d[i]   = Math.min(255, Math.max(0, r));
-                            d[i+1] = Math.min(255, Math.max(0, g));
-                            d[i+2] = Math.min(255, Math.max(0, b));
-                        }
-                        ctx.putImageData(imgData, 0, 0);
-                    }
-
-                    downloadCanvasFix(canvas, getBaseName(fileFil.name) + '-flt', targetFormat);
-                }; 
-                img.src = e.target.result;
-            }; 
-            reader.readAsDataURL(fileFil);
-        });
-
-        // --- 5. IMAGE CROPPER MANTIĞI ---
-        let fileCrop = null;
-        let cropper = null;
-        const imgCropPreview = document.getElementById('image-preview-crop');
-
-        setupDropZone('drop-zone-crop', 'file-input-crop', (file) => {
-            if (!file || !file.type.startsWith('image/')) return alert(i18n[currentLang].alertInvalid);
-            fileCrop = file;
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imgCropPreview.src = e.target.result;
-                document.getElementById('preview-container-crop').classList.remove('hidden');
-                
-                if (cropper) cropper.destroy();
-                cropper = new Cropper(imgCropPreview, {
-                    viewMode: 1, 
-                    background: false,
-                    autoCropArea: 0.8,
-                });
-            };
-            reader.readAsDataURL(file);
-        });
-
-        document.getElementById('action-btn-crop').addEventListener('click', () => {
-            if (!cropper) return;
-            const targetFormat = document.getElementById('format-select-crop').value;
-            
-            const canvas = cropper.getCroppedCanvas({
-                fillColor: targetFormat === 'image/jpeg' ? '#fff' : 'transparent',
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high',
+        function renderGmFrames() {
+            gmFramesList.innerHTML = '';
+            gmFiles.forEach((file, idx) => {
+                const div = document.createElement('div');
+                div.className = "relative flex-shrink-0 w-16 h-16 bg-inputbg rounded border border-bordercol overflow-hidden cursor-grab";
+                const img = document.createElement('img');
+                img.className = "w-full h-full object-cover";
+                const u = URL.createObjectURL(file);
+                img.src = u; img.onload = () => URL.revokeObjectURL(u);
+                const rm = document.createElement('button');
+                rm.className = "absolute top-0 right-0 bg-red-600 text-white text-[10px] px-1 font-bold";
+                rm.textContent = "✕";
+                rm.onclick = (e) => { e.stopPropagation(); gmFiles.splice(idx, 1); renderGmFrames(); };
+                div.appendChild(img); div.appendChild(rm);
+                gmFramesList.appendChild(div);
             });
-            
-            downloadCanvasFix(canvas, getBaseName(fileCrop.name) + '-crop', targetFormat);
+            if(!gmSortable && window.Sortable) {
+                gmSortable = Sortable.create(gmFramesList, {
+                    animation: 150,
+                    onEnd: () => {
+                        // Sıralamayı gmFiles dizisine yansıt
+                        const newFiles = [];
+                        Array.from(gmFramesList.children).forEach(child => {
+                            // index bulma mantığı basitleştirilebilir veya children index ile eşlenebilir
+                        });
+                    }
+                });
+            }
+        }
+
+        let gmCancelled = false;
+        document.getElementById('gm-cancel-btn').addEventListener('click', () => { gmCancelled = true; });
+
+        document.getElementById('action-btn-gm').addEventListener('click', async () => {
+            if(gmFiles.length === 0) return;
+            const globalDelay = parseInt(document.getElementById('gm-global-delay').value) || 200;
+            const loopCount = parseInt(document.getElementById('gm-loop').value) || 0;
+            const customW = parseInt(document.getElementById('gm-width').value) || null;
+            const customH = parseInt(document.getElementById('gm-height').value) || null;
+
+            if(gmFiles.length > 300) alert(i18n[currentLang].warnHeavy);
+
+            const progressBox = document.getElementById('gm-progress-box');
+            const progressBar = document.getElementById('gm-progress-bar');
+            const progressText = document.getElementById('gm-progress-text');
+            progressBox.classList.remove('hidden');
+            gmCancelled = false;
+
+            // Worker script blob hazırlama (gif.js için zorunlu aynı-origin kısıtı)
+            try {
+                const workerRes = await fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js');
+                const workerText = await workerRes.text();
+                const workerBlob = new Blob([workerText], { type: 'application/javascript' });
+                const workerUrl = URL.createObjectURL(workerBlob);
+
+                const gif = new GIF({
+                    workers: 2,
+                    quality: 10,
+                    workerScript: workerUrl,
+                    repeat: loopCount,
+                    width: customW || 300,
+                    height: customH || 200
+                });
+
+                // Boyutları ilk görselden veya custom değerden ayarla
+                let firstImg = await new Promise(res => {
+                    const im = new Image(); const u = URL.createObjectURL(gmFiles[0]);
+                    im.onload = () => { res(im); URL.revokeObjectURL(u); }; im.src = u;
+                });
+                const finalW = customW || firstImg.width;
+                const finalH = customH || firstImg.height;
+                gif.setOption('width', finalW);
+                gif.setOption('height', finalH);
+
+                for(let i=0; i<gmFiles.length; i++) {
+                    if(gmCancelled) break;
+                    progressText.textContent = `Processing frame ${i+1} / ${gmFiles.length}`;
+                    progressBar.style.width = `${Math.round(((i+1)/gmFiles.length)*50)}%`;
+
+                    const img = await new Promise(res => {
+                        const im = new Image(); const u = URL.createObjectURL(gmFiles[i]);
+                        im.onload = () => { res(im); URL.revokeObjectURL(u); }; im.src = u;
+                    });
+                    const c = document.createElement('canvas'); c.width = finalW; c.height = finalH; const x = c.getContext('2d');
+                    x.fillStyle = '#FFFFFF'; x.fillRect(0,0,finalW,finalH);
+                    x.drawImage(img, 0, 0, finalW, finalH);
+                    gif.addFrame(x, { delay: globalDelay });
+                    await new Promise(r => setTimeout(r, 10)); // UI donmasın
+                }
+
+                if(gmCancelled) {
+                    progressBox.classList.add('hidden');
+                    return;
+                }
+
+                gif.on('progress', p => {
+                    progressBar.style.width = `${50 + Math.round(p * 50)}%`;
+                    progressText.textContent = `Rendering GIF: ${Math.round(p * 100)}%`;
+                });
+
+                gif.on('finished', blob => {
+                    progressBox.classList.add('hidden');
+                    const url = URL.createObjectURL(blob);
+                    document.getElementById('gm-result-img').src = url;
+                    document.getElementById('gm-result-size').textContent = `Size: ${(blob.size/1024).toFixed(1)} KB`;
+                    document.getElementById('gm-result-box').classList.remove('hidden');
+                    downloadBlob(blob, 'animation', 'gif');
+                });
+
+                gif.render();
+
+            } catch(e) {
+                console.error(e);
+                alert("GIF generation error: " + e.message);
+                progressBox.classList.add('hidden');
+            }
+        });
+
+
+        // --- 2. GIF Splitter ---
+        setupDropZone('drop-zone-gs', 'file-input-gs', async (file) => {
+            if(!file) return;
+            const arrayBuffer = await file.arrayBuffer();
+            const gif =ouxParseGif(arrayBuffer); // gifuct-js
+            if(!gif) return alert("Invalid GIF file");
+
+            const framesGrid = document.getElementById('gs-frames-grid');
+            framesGrid.innerHTML = '';
+            document.getElementById('preview-container-gs').classList.remove('hidden');
+
+            const progressBox = document.getElementById('gs-progress-box');
+            const progressBar = document.getElementById('gs-progress-bar');
+            const progressText = document.getElementById('gs-progress-text');
+            progressBox.classList.remove('hidden');
+
+            const decompressFrames = parseGIF(arrayBuffer); // parseGIF from gifuct
+            const frames = decompressFrames(gif, true);
+            const canvas = document.createElement('canvas');
+            canvas.width = gif.header.width; canvas.height = gif.header.height;
+            const ctx = canvas.getContext('2d');
+
+            const extractedBlobs = [];
+            for(let i=0; i<frames.length; i++) {
+                progressText.textContent = `Extracting frame ${i+1}/${frames.length}`;
+                progressBar.style.width = `${Math.round(((i+1)/frames.length)*100)}%`;
+
+                const patch = ctx.createImageData(frames[i].dims.width, frames[i].dims.height);
+                patch.data.set(frames[i].patch);
+                ctx.putImageData(patch, frames[i].dims.left, frames[i].dims.top);
+
+                const dataUrl = canvas.toDataURL('image/png');
+                const img = document.createElement('img');
+                img.className = "w-full h-20 object-contain bg-darkbg rounded border border-bordercol cursor-pointer";
+                img.src = dataUrl;
+                img.onclick = () => { const a = document.createElement('a'); a.href = dataUrl; a.download = `frame_${i+1}.png`; a.click(); };
+                framesGrid.appendChild(img);
+
+                const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+                extractedBlobs.push({ name: `frame_${i+1}.png`, blob });
+                await new Promise(r => setTimeout(r, 5));
+            }
+
+            progressBox.classList.add('hidden');
+            document.getElementById('action-btn-gs').onclick = async () => {
+                const zip = new JSZip();
+                extractedBlobs.forEach(fb => zip.file(fb.name, fb.blob));
+                const content = await zip.generateAsync({type:"blob"});
+                downloadBlob(content, 'gif_frames', 'zip');
+            };
+        });
+
+        function ouzParseGif(ab) {
+            try {
+                const gif = parseGIF(ab);
+                return gif;
+            } catch(e) { return null; }
+        }
+
+
+        // --- 3. GIF Speed / Reverse / Loop ---
+        let gspFile = null;
+        setupDropZone('drop-zone-gsp', 'file-input-gsp', (file) => {
+            if(!file) return;
+            gspFile = file;
+            document.getElementById('gsp-preview-img').src = URL.createObjectURL(file);
+            document.getElementById('preview-container-gsp').classList.remove('hidden');
+        });
+
+        document.getElementById('action-btn-gsp').addEventListener('click', async () => {
+            if(!gspFile) return;
+            const speed = parseFloat(document.getElementById('gsp-speed').value) || 1;
+            const isReverse = document.getElementById('gsp-reverse').checked;
+            const loop = parseInt(document.getElementById('gsp-loop').value) || 0;
+
+            const ab = await gspFile.arrayBuffer();
+            const gif = parseGIF(ab);
+            const frames = decompressFrames(gif, true);
+            if(isReverse) frames.reverse();
+
+            const progressBox = document.getElementById('gsp-progress-box');
+            const progressBar = document.getElementById('gsp-progress-bar');
+            progressBox.classList.remove('hidden');
+
+            try {
+                const workerRes = await fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js');
+                const workerBlob = new Blob([await workerRes.text()], { type: 'application/javascript' });
+                const workerUrl = URL.createObjectURL(workerBlob);
+
+                const ogW = gif.header.width; const ogH = gif.header.height;
+                const newGif = new GIF({ workers: 2, quality: 10, workerScript: workerUrl, repeat: loop, width: ogW, height: ogH });
+
+                const canvas = document.createElement('canvas'); canvas.width = ogW; canvas.height = ogH; const ctx = canvas.getContext('2d');
+
+                for(let i=0; i<frames.length; i++) {
+                    progressBar.style.width = `${Math.round(((i+1)/frames.length)*50)}%`;
+                    const patch = ctx.createImageData(frames[i].dims.width, frames[i].dims.height);
+                    patch.data.set(frames[i].patch);
+                    ctx.putImageData(patch, frames[i].dims.left, frames[i].dims.top);
+                    const adjustedDelay = Math.round((frames[i].delay || 100) / speed);
+                    newGif.addFrame(ctx, { copy: true, delay: adjustedDelay < 20 ? 20 : adjustedDelay });
+                    await new Promise(r => setTimeout(r, 5));
+                }
+
+                newGif.on('progress', p => { progressBar.style.width = `${50 + Math.round(p*50)}%`; });
+                newGif.on('finished', blob => {
+                    progressBox.classList.add('hidden');
+                    downloadBlob(blob, 'modified', 'gif');
+                });
+                newGif.render();
+            } catch(e) {
+                alert("Error processing GIF: " + e.message);
+                progressBox.classList.add('hidden');
+            }
+        });
+
+
+        // --- 4. GIF Resize / Crop / Rotate ---
+        let gmodFile = null;
+        setupDropZone('drop-zone-gmod', 'file-input-gmod', async (file) => {
+            if(!file) return;
+            gmodFile = file;
+            document.getElementById('gmod-preview-img').src = URL.createObjectURL(file);
+            const ab = await file.arrayBuffer();
+            const gif = parseGIF(ab);
+            document.getElementById('gmod-width').value = gif.header.width;
+            document.getElementById('gmod-height').value = gif.header.height;
+            document.getElementById('preview-container-gmod').classList.remove('hidden');
+        });
+
+        document.getElementById('action-btn-gmod').addEventListener('click', async () => {
+            if(!gmodFile) return;
+            const tw = parseInt(document.getElementById('gmod-width').value);
+            const th = parseInt(document.getElementById('gmod-height').value);
+            if(!tw || !th) return alert("Enter valid dimensions");
+
+            const ab = await gmodFile.arrayBuffer();
+            const gif = parseGIF(ab);
+            const frames = decompressFrames(gif, true);
+
+            const progressBox = document.getElementById('gmod-progress-box');
+            const progressBar = document.getElementById('gmod-progress-bar');
+            progressBox.classList.remove('hidden');
+
+            try {
+                const workerRes = await fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js');
+                const workerBlob = new Blob([await workerRes.text()], { type: 'application/javascript' });
+                const workerUrl = URL.createObjectURL(workerBlob);
+
+                const newGif = new GIF({ workers: 2, quality: 10, workerScript: workerUrl, repeat: 0, width: tw, height: th });
+                const tempC = document.createElement('canvas'); tempC.width = gif.header.width; tempC.height = gif.header.height; const tempX = tempC.getContext('2d');
+                const outC = document.createElement('canvas'); outC.width = tw; outC.height = th; const outX = outC.getContext('2d');
+
+                for(let i=0; i<frames.length; i++) {
+                    progressBar.style.width = `${Math.round(((i+1)/frames.length)*50)}%`;
+                    const patch = tempX.createImageData(frames[i].dims.width, frames[i].dims.height);
+                    patch.data.set(frames[i].patch);
+                    tempX.putImageData(patch, frames[i].dims.left, frames[i].dims.top);
+
+                    outX.fillStyle = '#FFFFFF'; outX.fillRect(0,0,tw,th);
+                    outX.drawImage(tempC, 0, 0, tw, th);
+                    newGif.addFrame(outX, { copy: true, delay: frames[i].delay || 100 });
+                    await new Promise(r => setTimeout(r, 5));
+                }
+
+                newGif.on('progress', p => { progressBar.style.width = `${50 + Math.round(p*50)}%`; });
+                newGif.on('finished', blob => {
+                    progressBox.classList.add('hidden');
+                    downloadBlob(blob, 'resized_gif', 'gif');
+                });
+                newGif.render();
+            } catch(e) {
+                alert("Error modifying GIF: " + e.message);
+                progressBox.classList.add('hidden');
+            }
         });
 
         // Başlangıç dilini ayarla
         changeLang('en');
-
     </script>
 </body>
 </html>
