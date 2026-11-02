@@ -72,7 +72,7 @@
             </div>
 
             <div id="preview-container-conv" class="hidden space-y-4">
-                <!-- Thumbnail Listesi ve Kaldırma Butonları -->
+                <!-- Küçük Önizleme (Thumbnail) Listesi -->
                 <div id="thumb-list-conv" class="max-h-40 overflow-y-auto space-y-2 bg-darkbg p-2 rounded-lg border border-bordercol"></div>
                 
                 <div>
@@ -523,7 +523,6 @@
             const validFiles = Array.from(filesList).filter(f => f.type.startsWith('image/'));
             if(validFiles.length === 0) return alert(i18n[currentLang].alertInvalid);
             
-            // Mevcut listeye ekle
             filesConv = filesConv.concat(validFiles);
             renderThumbnails();
         }, true); 
@@ -544,12 +543,10 @@
                 btn.textContent = `${processedCount + 1} / ${totalFiles}`;
 
                 try {
-                    // createImageBitmap kullanımı (desteklenmiyorsa alternatif kurgu veya doğrudan destek)
                     let bitmap;
                     if (window.createImageBitmap) {
                         bitmap = await createImageBitmap(file);
                     } else {
-                        // Fallback
                         const blobUrl = URL.createObjectURL(file);
                         bitmap = await new Promise((res, rej) => {
                             const im = new Image();
@@ -570,10 +567,8 @@
                     }
                     ctx.drawImage(bitmap, 0, 0);
 
-                    // Bitmap kapatma (bellek sızıntısını önlemek için)
                     if (bitmap.close) bitmap.close();
 
-                    // Blob üretimi ve isim benzersizleştirme
                     await new Promise((resolve) => {
                         downloadCanvasFix(canvas, getBaseName(file.name), targetFormat, 0.92, (blob, ext) => {
                             if (blob) {
@@ -588,7 +583,6 @@
                                 }
 
                                 if (totalFiles === 1) {
-                                    // Tek dosya ise direkt indir
                                     const url = URL.createObjectURL(blob);
                                     const a = document.createElement('a');
                                     a.href = url;
@@ -596,7 +590,6 @@
                                     a.click();
                                     setTimeout(() => URL.revokeObjectURL(url), 1000);
                                 } else {
-                                    // Çoklu ise ZIP'e ekle
                                     zip.file(fileName, blob);
                                 }
                             }
@@ -611,7 +604,6 @@
                 processedCount++;
             }
 
-            // Eğer birden fazla dosya varsa ZIP olarak indir
             if (totalFiles > 1) {
                 const content = await zip.generateAsync({ type: "blob" });
                 const zipUrl = URL.createObjectURL(content);
@@ -622,7 +614,6 @@
                 setTimeout(() => URL.revokeObjectURL(zipUrl), 1000);
             }
 
-            // Butonu eski haline getir
             btn.disabled = false;
             btn.textContent = i18n[currentLang].btnConvertBatch;
         });
